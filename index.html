@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faro — Regras de Firewall com IA</title>
+  <style>
+    /* ── Reset & Base ── */
+    *{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --bg:     #0d1b2a;
+      --card:   #1b263b;
+      --card2:  #223048;
+      --azul:   #4f8ef7;
+      --azul2:  #2d6bcf;
+      --verde:  #2ecc71;
+      --amar:   #f1c40f;
+      --verm:   #e74c3c;
+      --cinza:  #b0b8d8;
+      --branco: #ffffff;
+      --borda:  #2a3a56;
+    }
+    html{scroll-behavior:smooth}
+    body{
+      font-family:'Segoe UI',system-ui,sans-serif;
+      background:var(--bg);color:var(--cinza);
+      line-height:1.6;
+    }
+    a{color:var(--azul);text-decoration:none}
+    a:hover{text-decoration:underline}
+
+    /* ── Nav ── */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:100;
+      background:rgba(13,27,42,.95);backdrop-filter:blur(8px);
+      border-bottom:2px solid var(--azul);
+      padding:.6rem 2rem;display:flex;align-items:center;gap:2rem;
+    }
+    nav .logo{font-weight:700;font-size:1.15rem;color:var(--azul)}
+    nav ul{list-style:none;display:flex;gap:1.5rem;flex-wrap:wrap}
+    nav ul a{color:var(--cinza);font-size:.9rem;transition:color .2s}
+    nav ul a:hover{color:var(--azul);text-decoration:none}
+
+    /* ── Hero ── */
+    #hero{
+      min-height:100vh;display:flex;flex-direction:column;
+      justify-content:center;align-items:center;text-align:center;
+      padding:6rem 2rem 4rem;
+      background:radial-gradient(ellipse at 60% 30%,#1a2e50 0%,var(--bg) 65%);
+    }
+    #hero h1{
+      font-size:clamp(2rem,5vw,3.6rem);font-weight:800;
+      color:var(--branco);line-height:1.15;margin-bottom:.6rem;
+    }
+    #hero h1 span{color:var(--azul)}
+    #hero p.sub{
+      font-size:clamp(1rem,2.2vw,1.25rem);color:var(--cinza);
+      max-width:700px;margin:.8rem auto 2rem;
+    }
+    .btn{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.7rem 1.5rem;border-radius:8px;font-weight:600;
+      font-size:.95rem;transition:all .2s;cursor:pointer;border:none;
+    }
+    .btn-primario{background:var(--azul);color:#fff}
+    .btn-primario:hover{background:var(--azul2);text-decoration:none}
+    .btn-secundario{
+      background:transparent;color:var(--azul);
+      border:2px solid var(--azul);
+    }
+    .btn-secundario:hover{background:var(--azul);color:#fff;text-decoration:none}
+    .hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+
+    /* ── Métricas hero ── */
+    .metricas-hero{
+      display:flex;gap:2rem;flex-wrap:wrap;justify-content:center;
+      margin-top:3rem;
+    }
+    .metrica-hero{
+      background:var(--card);border:1px solid var(--borda);
+      border-radius:12px;padding:1.2rem 1.8rem;text-align:center;
+      min-width:140px;
+    }
+    .metrica-hero .num{
+      font-size:2rem;font-weight:800;color:var(--azul);display:block;
+    }
+    .metrica-hero .label{font-size:.8rem;color:var(--cinza)}
+
+    /* ── Sections ── */
+    section{padding:4rem 2rem;max-width:1100px;margin:0 auto}
+    h2{
+      font-size:1.8rem;font-weight:700;color:var(--branco);
+      margin-bottom:1rem;padding-bottom:.5rem;
+      border-bottom:2px solid var(--azul);display:inline-block;
+    }
+    h3{font-size:1.15rem;font-weight:600;color:var(--branco);margin-bottom:.5rem}
+
+    /* ── Cards grid ── */
+    .cards{display:grid;gap:1.5rem}
+    .cards-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .cards-3{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+    .card{
+      background:var(--card);border:1px solid var(--borda);
+      border-radius:12px;padding:1.5rem;
+    }
+    .card-topo{
+      height:5px;border-radius:8px 8px 0 0;margin:-1.5rem -1.5rem 1rem;
+    }
+    .card p{font-size:.95rem;line-height:1.7}
+    .tag{
+      display:inline-block;padding:.2rem .7rem;border-radius:20px;
+      font-size:.78rem;font-weight:600;margin-bottom:.6rem;
+    }
+
+    /* ── Funil ── */
+    .funil{display:flex;flex-direction:column;align-items:center;gap:.6rem;margin:2rem 0}
+    .funil-bloco{
+      border-radius:8px;padding:.9rem 2rem;text-align:center;
+      font-weight:600;color:var(--branco);transition:all .2s;
+      cursor:default;
+    }
+    .funil-bloco:hover{transform:scaleX(1.03)}
+    .funil-bloco .n{font-size:1.4rem;font-weight:800}
+    .funil-bloco .desc{font-size:.85rem;opacity:.85}
+    .funil-seta{font-size:1.4rem;color:var(--cinza);line-height:1}
+
+    /* ── Hipóteses ── */
+    .hipoteses{display:flex;flex-direction:column;gap:1rem}
+    .hip{
+      background:var(--card);border-left:5px solid;
+      border-radius:0 10px 10px 0;
+      padding:1.1rem 1.4rem;display:flex;
+      align-items:flex-start;gap:1rem;
+    }
+    .hip .hid{
+      font-size:1.2rem;font-weight:800;min-width:42px;text-align:center;
+    }
+    .hip .hbody{flex:1}
+    .hip .hbody p{font-size:.92rem;line-height:1.6;margin:.3rem 0 0}
+    .status-badge{
+      padding:.2rem .8rem;border-radius:20px;font-size:.78rem;
+      font-weight:700;white-space:nowrap;
+    }
+
+    /* ── Linha do tempo ── */
+    .timeline{position:relative;padding-left:2.5rem}
+    .timeline::before{
+      content:'';position:absolute;left:.75rem;top:0;bottom:0;
+      width:2px;background:var(--borda);
+    }
+    .tl-item{position:relative;margin-bottom:2rem}
+    .tl-dot{
+      position:absolute;left:-1.9rem;top:.3rem;
+      width:14px;height:14px;border-radius:50%;
+      border:2px solid var(--card);
+    }
+    .tl-item .data{font-size:.82rem;color:var(--azul);font-weight:600}
+    .tl-item h4{color:var(--branco);font-size:1rem;margin:.2rem 0}
+    .tl-item p{font-size:.9rem;line-height:1.6}
+    .tl-item ul{font-size:.9rem;line-height:1.8;padding-left:1.2rem}
+
+    /* ── Arquitetura ── */
+    .arch-box{
+      background:var(--card2);border:1px solid var(--borda);
+      border-radius:12px;padding:1.5rem;
+      display:grid;gap:1rem;
+      grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    }
+    .arch-comp{
+      background:var(--card);border:1px solid var(--borda);
+      border-radius:8px;padding:1rem;text-align:center;
+    }
+    .arch-comp .icon{font-size:2rem;margin-bottom:.4rem}
+    .arch-comp h4{color:var(--branco);font-size:.95rem}
+    .arch-comp p{font-size:.8rem;color:var(--cinza)}
+    .arch-arrow{
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.5rem;color:var(--azul);
+    }
+
+    /* ── Comparação ── */
+    .comp-table{width:100%;border-collapse:collapse;margin-top:1rem}
+    .comp-table th{
+      background:var(--card2);color:var(--branco);
+      padding:.8rem 1rem;text-align:left;font-size:.9rem;
+    }
+    .comp-table td{
+      padding:.8rem 1rem;border-bottom:1px solid var(--borda);
+      font-size:.9rem;
+    }
+    .comp-table tr:last-child td{border-bottom:none}
+    .comp-table tr:hover td{background:var(--card2)}
+
+    /* ── Barra de progresso ── */
+    .progresso{margin:1.5rem 0}
+    .prog-item{margin-bottom:1.2rem}
+    .prog-label{
+      display:flex;justify-content:space-between;
+      font-size:.88rem;margin-bottom:.3rem;
+    }
+    .prog-label span:last-child{color:var(--azul);font-weight:600}
+    .prog-bar{
+      height:10px;background:var(--card2);border-radius:8px;overflow:hidden;
+    }
+    .prog-fill{height:100%;border-radius:8px;transition:width 1s ease}
+
+    /* ── Entregáveis ── */
+    .entregaveis{display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+    .entreg{
+      background:var(--card);border:1px solid var(--borda);
+      border-radius:10px;padding:1.2rem;
+      display:flex;align-items:flex-start;gap:.9rem;
+    }
+    .entreg .icon{font-size:1.6rem;flex-shrink:0}
+    .entreg h4{color:var(--branco);font-size:.95rem;margin-bottom:.3rem}
+    .entreg p{font-size:.84rem}
+    .check{color:var(--verde);font-weight:700}
+    .pend{color:var(--amar);font-weight:700}
+
+    /* ── Rodapé ── */
+    footer{
+      background:var(--card);border-top:2px solid var(--borda);
+      text-align:center;padding:2rem;margin-top:4rem;
+      font-size:.88rem;
+    }
+    footer a{color:var(--azul)}
+
+    /* ── Utils ── */
+    .mt1{margin-top:1rem}
+    .mt2{margin-top:2rem}
+    .mb1{margin-bottom:1rem}
+    .txt-verde{color:var(--verde)}
+    .txt-amar{color:var(--amar)}
+    .txt-verm{color:var(--verm)}
+    .txt-azul{color:var(--azul)}
+    .txt-branco{color:var(--branco)}
+    code{
+      background:var(--card2);color:var(--azul);
+      padding:.1rem .4rem;border-radius:4px;font-size:.88rem;
+    }
+    .divider{
+      border:none;border-top:1px solid var(--borda);
+      margin:3rem 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Navegação ── -->
+<nav>
+  <span class="logo">🔥 Faro</span>
+  <ul>
+    <li><a href="#contexto">Contexto</a></li>
+    <li><a href="#problema">Problema</a></li>
+    <li><a href="#solucao">Solução</a></li>
+    <li><a href="#arquitetura">Arquitetura</a></li>
+    <li><a href="#evolucao">Evolução</a></li>
+    <li><a href="#resultados">Resultados</a></li>
+    <li><a href="#repositorio">Repositório</a></li>
+  </ul>
+</nav>
+
+<!-- ── Hero ── -->
+<section id="hero">
+  <h1>Faro<br><span>Regras de Firewall com IA</span></h1>
+  <p class="sub">
+    Pipeline que correlaciona alertas do Suricata com o filterlog do OPNsense
+    e propõe regras de bloqueio via API REST — com avaliação determinística
+    antes de qualquer escrita no firewall.
+  </p>
+  <div class="hero-btns">
+    <a class="btn btn-primario" href="#resultados">Ver resultados</a>
+    <a class="btn btn-secundario" href="https://github.com/Aparecido-Junior-Dev/firewall-ia" target="_blank">GitHub</a>
+  </div>
+  <div class="metricas-hero">
+    <div class="metrica-hero">
+      <span class="num">48.915</span>
+      <span class="label">alertas analisados</span>
+    </div>
+    <div class="metrica-hero">
+      <span class="num">87,3%</span>
+      <span class="label">já bloqueados pelo PF</span>
+    </div>
+    <div class="metrica-hero">
+      <span class="num">31 dias</span>
+      <span class="label">de filterlog (10,6M fluxos)</span>
+    </div>
+    <div class="metrica-hero">
+      <span class="num">140</span>
+      <span class="label">testes automatizados</span>
+    </div>
+  </div>
+</section>
+
+<!-- ── Contexto ── -->
+<section id="contexto">
+  <h2>Contexto</h2>
+  <div class="cards cards-2 mt2">
+    <div class="card">
+      <div class="card-topo" style="background:var(--azul)"></div>
+      <h3>O ambiente</h3>
+      <p>
+        Um firewall OPNsense 26.7.8 protege uma rede real com o Suricata 8.0.8
+        rodando em modo IDS (wire/pcap) na interface WAN. O PF usa uma política de
+        <strong style="color:var(--branco)">blacklist + default deny</strong>:
+        bloqueia tudo que não é explicitamente permitido.
+      </p>
+      <p class="mt1">
+        O Suricata gera alertas para tráfego suspeito. O PF registra cada decisão
+        de bloqueio ou passagem no filterlog. Dois sistemas independentes,
+        olhando para o mesmo tráfego.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-topo" style="background:var(--verde)"></div>
+      <h3>As fontes de dados</h3>
+      <p>
+        O pipeline cruza dois arquivos de log usando
+        <strong style="color:var(--branco)">Community ID</strong> como chave de
+        junção — um hash calculado a partir de protocolo, IPs e portas, idêntico
+        nos dois sentidos do fluxo.
+      </p>
+      <ul style="margin-top:.8rem;padding-left:1.2rem;font-size:.92rem;line-height:1.9">
+        <li><code>eve.json</code> — alertas do Suricata (48.915 eventos)</li>
+        <li><code>filterlog</code> — decisões do PF (473.304 linhas)</li>
+        <li><code>crowdsec_blocklists</code> — 8.332 IPs bloqueados em tempo real</li>
+        <li><code>ABUSEIP</code> — alias com 414.244 IPs (AbuseIPDB score 100)</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Problema ── -->
+<section id="problema">
+  <h2>O problema</h2>
+  <p class="mt1" style="max-width:760px;font-size:1.05rem">
+    O Suricata gerou <strong style="color:var(--branco)">48.915 alertas</strong>
+    em 7 dias. Olhando só esse número, parece que a rede está sob ataque constante.
+    Mas o número de alertas não diz nada sobre o risco real —
+    porque o Suricata <em>vê</em> o pacote antes do PF decidir.
+  </p>
+
+  <div class="funil mt2">
+    <div class="funil-bloco" style="background:#1a3a5c;width:100%;max-width:620px">
+      <div class="n">48.915</div>
+      <div class="desc">alertas Suricata — período total</div>
+    </div>
+    <div class="funil-seta">▼</div>
+    <div class="funil-bloco" style="background:#1a3a2a;width:87%;max-width:540px">
+      <div class="n txt-verde">42.639 + 165</div>
+      <div class="desc">SEM REGISTRO (default deny) + BLOQUEADOS — 87,3%</div>
+    </div>
+    <div class="funil-seta">▼</div>
+    <div class="funil-bloco" style="background:#2a2a1a;width:50%;max-width:310px">
+      <div class="n txt-amar">6.012</div>
+      <div class="desc">PASSARAM — 12,3%</div>
+    </div>
+    <div class="funil-seta">▼</div>
+    <div class="funil-bloco" style="background:#1a1a2a;width:25%;max-width:155px">
+      <div class="n txt-azul">18</div>
+      <div class="desc">externos legítimos</div>
+    </div>
+  </div>
+
+  <div class="cards cards-3 mt2">
+    <div class="card">
+      <div class="card-topo" style="background:var(--verm)"></div>
+      <span class="tag" style="background:#2d1a1a;color:var(--verm)">Problema 1</span>
+      <h3>Alertas ≠ ameaças</h3>
+      <p>
+        O Suricata enxerga o pacote antes do PF decidir. Se 99,2% das origens
+        já estão na blacklist, a maioria dos alertas descreve tráfego que o
+        firewall já bloqueia. Uma regra nova só tem valor sobre o que <em>passa</em>.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-topo" style="background:var(--amar)"></div>
+      <span class="tag" style="background:#2d2a1a;color:var(--amar)">Problema 2</span>
+      <h3>Resíduo é quase todo reputação</h3>
+      <p>
+        Dos 1.397 alertas públicos que passaram pela blacklist, 1.377 (98,6%)
+        são assinaturas de reputação (CINS, DShield). Isso mede divergência entre
+        listas, não comportamento novo.
+      </p>
+    </div>
+    <div class="card">
+      <div class="card-topo" style="background:var(--cinza)"></div>
+      <span class="tag" style="background:#1a1a2d;color:var(--cinza)">Problema 3</span>
+      <h3>Origem privada ignorada</h3>
+      <p>
+        ≈ 6.495 alertas (82% do resíduo) vêm de um host interno (192.168.15.200).
+        Descobriu-se que é um dispositivo legítimo em outra rede — gerando falsos
+        positivos de STUN, DNS e Discord.
+      </p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Pergunta de pesquisa ── -->
+<section id="pergunta">
+  <h2>Pergunta de pesquisa</h2>
+  <div class="card mt2" style="border-left:4px solid var(--azul);border-radius:4px 12px 12px 4px">
+    <p style="font-size:1.05rem;font-style:italic;color:var(--branco);line-height:1.8">
+      "Dada a política atual do OPNsense (blacklist e default deny), quais fluxos
+      sinalizados pelo Suricata passam pelo PF, e quais regras adicionais os
+      bloqueariam com o menor bloqueio colateral de tráfego legítimo, em comparação
+      com uma solução pronta de bloqueio por reputação e comportamento (CrowdSec)?"
+    </p>
+    <p class="mt1" style="font-size:.88rem">— Prof. Diego Kreutz, avaliação V2</p>
+  </div>
+
+  <div class="hipoteses mt2">
+
+    <div class="hip" style="border-color:var(--verde)">
+      <div class="hid txt-verde">H1</div>
+      <div class="hbody">
+        <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <h3 style="margin:0">Maioria já é bloqueada pelo PF</h3>
+          <span class="status-badge" style="background:#1a3a2a;color:var(--verde)">✅ Confirmada</span>
+        </div>
+        <p>87,3% dos alertas correspondem a fluxos que o PF já trata (42.639 sem registro + 165 bloqueados). O volume de alertas superestima o risco real.</p>
+      </div>
+    </div>
+
+    <div class="hip" style="border-color:var(--amar)">
+      <div class="hid txt-amar">H2</div>
+      <div class="hbody">
+        <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <h3 style="margin:0">Divergência entre feeds explica os que passam</h3>
+          <span class="status-badge" style="background:#2d2a1a;color:var(--amar)">⚠️ Parcial</span>
+        </div>
+        <p>Os 18 externos que passaram são STUN e Jabber (tráfego legítimo), não divergência entre listas. Falta medir contribuição exclusiva e latência de cada feed com snapshots diários.</p>
+      </div>
+    </div>
+
+    <div class="hip" style="border-color:var(--cinza)">
+      <div class="hid txt-branco">H3</div>
+      <div class="hbody">
+        <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <h3 style="margin:0">Comportamento generaliza melhor que IP individual</h3>
+          <span class="status-badge" style="background:#1a1a2a;color:var(--cinza)">❌ Não conclusivo</span>
+        </div>
+        <p>Com 31 dias de dados, tanto IP individual (4.945 regras) quanto comportamento (169 regras) tiveram 0% de cobertura — porque o tráfego que passa é legítimo. Sem resíduo real, não é possível diferenciar as famílias.</p>
+      </div>
+    </div>
+
+    <div class="hip" style="border-color:var(--verde)">
+      <div class="hid txt-verde">H4</div>
+      <div class="hbody">
+        <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <h3 style="margin:0">Regras do pipeline vs. CrowdSec</h3>
+          <span class="status-badge" style="background:#1a3a2a;color:var(--verde)">✅ Respondida</span>
+        </div>
+        <p>O CrowdSec já está ativo no OPNsense (8.332 IPs bloqueando). Ambos tiveram 0% de cobertura incremental — concordam que o tráfego que passa é legítimo. O firewall está funcionando.</p>
+      </div>
+    </div>
+
+    <div class="hip" style="border-color:var(--cinza)">
+      <div class="hid txt-cinza" style="color:var(--cinza)">H5</div>
+      <div class="hbody">
+        <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <h3 style="margin:0">LLM propõe regras comparáveis às heurísticas</h3>
+          <span class="status-badge" style="background:#1a1a2a;color:var(--cinza)">⏳ Sem resíduo</span>
+        </div>
+        <p>Sem resíduo perigoso para analisar, o LLM não tem o que propor. Entra na Fase 3 como família opcional de regras — nunca escreve direto no firewall, sempre passa pelo simulador primeiro.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Solução ── -->
+<section id="solucao">
+  <h2>Proposta de solução</h2>
+  <p class="mt1" style="max-width:760px;font-size:1.05rem">
+    Um pipeline <strong style="color:var(--branco)">determinístico</strong> que
+    classifica cada alerta por desfecho no PF, separa o resíduo em três trilhas e
+    avalia famílias de regras com split temporal antes de qualquer escrita no firewall.
+  </p>
+
+  <div class="cards cards-3 mt2">
+    <div class="card">
+      <div class="card-topo" style="background:var(--cinza)"></div>
+      <h3>Trilha interna</h3>
+      <p>
+        6.495 alertas do host 192.168.15.200 — dispositivo legítimo de outra rede
+        gerando falsos positivos (Discord, STUN, DNS).
+      </p>
+      <p class="mt1"><strong style="color:var(--verde)">Ação:</strong> suppress/threshold no Suricata. Não criar regra de PF.</p>
+    </div>
+    <div class="card">
+      <div class="card-topo" style="background:var(--amar)"></div>
+      <h3>Trilha reputação</h3>
+      <p>
+        1.377 alertas de IPs em listas de reputação (ET CINS, Spamhaus, DShield).
+        Divergência entre feeds — um IP está em uma lista mas não em outra.
+      </p>
+      <p class="mt1"><strong style="color:var(--amar)">Ação:</strong> medir contribuição exclusiva e latência de cada feed.</p>
+    </div>
+    <div class="card">
+      <div class="card-topo" style="background:var(--verm)"></div>
+      <h3>Trilha comportamento</h3>
+      <p>
+        20 alertas de comportamento real: 8 do exploit Realtek CVE-2021-35394,
+        12 de STUN/Jabber (legítimo).
+      </p>
+      <p class="mt1"><strong style="color:var(--verm)">Ação:</strong> 5 regras de bloqueio por IP já criadas via API REST.</p>
+    </div>
+  </div>
+
+  <div class="card mt2">
+    <div class="card-topo" style="background:var(--azul)"></div>
+    <h3>Critério de seleção — método determinístico</h3>
+    <ol style="padding-left:1.4rem;line-height:2;font-size:.95rem;margin-top:.5rem">
+      <li><strong style="color:var(--branco)">Community ID igual</strong> no eve.json e no filterlog — mesmo fluxo, não estimativa temporal</li>
+      <li><strong style="color:var(--branco)">PF registrou bloqueio</strong> (action = block) para esse fluxo</li>
+      <li><strong style="color:var(--branco)">Verificação de duplicata</strong> — consulta API do OPNsense antes de criar; se regra <code>IA-aparecido</code> já existe, ignora</li>
+      <li><strong style="color:var(--branco)">LLM nunca escreve direto</strong> no firewall — toda proposta passa pelo simulador antes</li>
+    </ol>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Arquitetura ── -->
+<section id="arquitetura">
+  <h2>Arquitetura</h2>
+  <div class="arch-box mt2">
+    <div class="arch-comp">
+      <div class="icon">🌐</div>
+      <h4>Internet</h4>
+      <p>Tráfego WAN entrando em igb0</p>
+    </div>
+    <div class="arch-arrow">⟶</div>
+    <div class="arch-comp" style="border-color:var(--amar)">
+      <div class="icon">🛡️</div>
+      <h4>Suricata IDS</h4>
+      <p>wire/pcap — cópia do tráfego → eve.json + community_id</p>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--cinza)">+</div>
+    <div class="arch-comp" style="border-color:var(--verde)">
+      <div class="icon">🔒</div>
+      <h4>PF (OPNsense)</h4>
+      <p>pass / block → filterlog com log em pass e block</p>
+    </div>
+    <div class="arch-arrow">⟶</div>
+    <div class="arch-comp" style="border-color:var(--azul)">
+      <div class="icon">🔗</div>
+      <h4>correlacionar_v2.py</h4>
+      <p>Community ID une os dois — BLOQUEADO / PASSOU / SEM_REGISTRO</p>
+    </div>
+    <div class="arch-arrow">⟶</div>
+    <div class="arch-comp" style="border-color:var(--verm)">
+      <div class="icon">📋</div>
+      <h4>propor_regra.py</h4>
+      <p>POST addRule + apply via API REST do OPNsense</p>
+    </div>
+  </div>
+
+  <div class="card mt2" style="border:1px solid var(--amar)">
+    <h3 class="txt-amar">Segurança do pipeline</h3>
+    <p class="mt1">
+      Os campos do eve.json (user-agent, URI, payload) são controlados pelo atacante.
+      Um LLM que lesse esses campos e escrevesse no firewall estaria exposto a
+      <strong style="color:var(--branco)">injeção indireta de prompt</strong> (OWASP LLM01/LLM06).
+      Por isso, o pipeline mantém uma fronteira clara:
+    </p>
+    <ul style="margin-top:.8rem;padding-left:1.2rem;line-height:2;font-size:.9rem">
+      <li>Parsing, correlação e métricas são <strong style="color:var(--verde)">sempre determinísticos</strong></li>
+      <li>O LLM, quando entrar, recebe apenas perfis agregados (porta, taxa, ASN) — não o payload</li>
+      <li>Toda proposta do LLM passa pelo simulador antes de qualquer ação na rede</li>
+      <li>IPs internos são anonimizados antes de enviar a qualquer API externa (LGPD)</li>
+    </ul>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Evolução ── -->
+<section id="evolucao">
+  <h2>Evolução do projeto</h2>
+  <div class="timeline mt2">
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--cinza)"></div>
+      <span class="data">Agosto — Setembro 2026</span>
+      <h4>Início: ideia e primeiros dados</h4>
+      <p>
+        Tema surgiu da necessidade real de automatizar a criação de regras de firewall
+        em um ambiente de provedor de internet. Primeiros experimentos com os logs do
+        OPNsense e Suricata.
+      </p>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--amar)"></div>
+      <span class="data">Setembro — Outubro 2026</span>
+      <h4>V1: correlação por tupla e janela temporal</h4>
+      <ul>
+        <li>Correlação Suricata × PF com janela de ±5 segundos</li>
+        <li>Análise dos 48.915 alertas — funil inicial</li>
+        <li>Identificação do problema: alerta ≠ ameaça que passou</li>
+        <li>5 regras de bloqueio criadas para Realtek CVE-2021-35394</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--azul)"></div>
+      <span class="data">Outubro 2026</span>
+      <h4>V2: Community ID + 3 trilhas</h4>
+      <ul>
+        <li>Substituição da janela temporal pelo Community ID (junção exata)</li>
+        <li>Separação do funil em 3 trilhas: interna, reputação, comportamento</li>
+        <li>Avaliação do professor: pergunta de pesquisa + hipóteses H1-H5</li>
+        <li>Repositório criado no GitHub com 66 arquivos</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--verde)"></div>
+      <span class="data">Novembro 2026</span>
+      <h4>Fase 1-3: 31 dias de dados + CrowdSec</h4>
+      <ul>
+        <li>CrowdSec descoberto já ativo no OPNsense (8.332 IPs)</li>
+        <li>31 dias de filterlog processados (10,6M fluxos)</li>
+        <li>Split temporal A (17 dias) × B (14 dias)</li>
+        <li>Avaliação de 4 famílias de regras vs. CrowdSec vs. AbuseIPDB</li>
+        <li>Script de coleta diária de feeds (5 fontes)</li>
+      </ul>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot" style="background:var(--amar);border:2px dashed var(--branco)"></div>
+      <span class="data">Próximas semanas</span>
+      <h4>Fase 4: validação e relatório</h4>
+      <ul>
+        <li>Investigar os 195 IPs que mudaram de status entre os períodos</li>
+        <li>Rotular manualmente 100 fluxos (oráculo local)</li>
+        <li>Modo sombra no OPNsense para regras candidatas</li>
+        <li>Medir contribuição exclusiva e latência entre feeds (H2)</li>
+        <li>Relatório final com ameaças à validade</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Resultados ── -->
+<section id="resultados">
+  <h2>Resultados</h2>
+
+  <div class="progresso mt2">
+    <div class="prog-item">
+      <div class="prog-label">
+        <span>SEM REGISTRO (default deny — PF bloqueou sem log individual)</span>
+        <span>87,2% — 42.639</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:87.2%;background:var(--azul)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-label">
+        <span>PASSOU (tráfego legítimo — STUN, Jabber, Discord)</span>
+        <span>12,3% — 6.012</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:12.3%;background:var(--amar)"></div></div>
+    </div>
+    <div class="prog-item">
+      <div class="prog-label">
+        <span>BLOQUEADO (Suricata + PF — registro explícito)</span>
+        <span>0,3% — 165</span>
+      </div>
+      <div class="prog-bar"><div class="prog-fill" style="width:0.3%;background:var(--verde)"></div></div>
+    </div>
+  </div>
+
+  <h3 class="mt2">Comparação das famílias de regras — 31 dias</h3>
+  <table class="comp-table mt1">
+    <thead>
+      <tr>
+        <th>Família</th>
+        <th>Regras</th>
+        <th>Cobertura incremental</th>
+        <th>Bloqueio colateral</th>
+        <th>Conclusão</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong style="color:var(--branco)">IP individual</strong></td>
+        <td>4.945 IPs</td>
+        <td class="txt-verde">0 fluxos (0%)</td>
+        <td>0</td>
+        <td>Não generaliza — IPs mudam a cada dia</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--branco)">Comportamento (porta + taxa)</strong></td>
+        <td>169 regras</td>
+        <td class="txt-verde">0 fluxos (0%)</td>
+        <td>0</td>
+        <td>Sem resíduo para diferenciar</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--azul)">CrowdSec</strong> (baseline)</td>
+        <td>8.328 IPs</td>
+        <td class="txt-verde">0 fluxos (0%)</td>
+        <td>0</td>
+        <td>Concorda: tráfego que passa é legítimo</td>
+      </tr>
+      <tr>
+        <td><strong style="color:var(--cinza)">AbuseIPDB</strong> (baseline)</td>
+        <td>414.244 IPs</td>
+        <td class="txt-verde">0 fluxos (0%)</td>
+        <td>0</td>
+        <td>Concorda: tráfego que passa é legítimo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="card mt2" style="border:1px solid var(--verde)">
+    <h3 class="txt-verde">Resposta à pergunta de pesquisa</h3>
+    <p class="mt1" style="font-size:1.02rem;line-height:1.8">
+      Os fluxos que passam pelo PF são tráfego legítimo (STUN, Jabber, DNS, Discord).
+      <strong style="color:var(--branco)">Nenhuma regra adicional deveria bloqueá-los.</strong>
+      O firewall já está funcionando corretamente. O resultado é válido:
+      confirma que a política de blacklist + default deny do OPNsense é eficaz
+      e que o volume de alertas do Suricata superestima o risco real.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Entregáveis ── -->
+<section id="entregaveis">
+  <h2>Entregáveis</h2>
+  <div class="entregaveis mt2">
+    <div class="entreg">
+      <span class="icon">📦</span>
+      <div>
+        <h4>Pipeline reproduzível</h4>
+        <p><span class="check">✅</span> Repositório com scripts, ficha do dataset e instruções</p>
+      </div>
+    </div>
+    <div class="entreg">
+      <span class="icon">🔽</span>
+      <div>
+        <h4>Funil com 3 trilhas</h4>
+        <p><span class="check">✅</span> Interna, reputação e comportamento documentadas</p>
+      </div>
+    </div>
+    <div class="entreg">
+      <span class="icon">⚖️</span>
+      <div>
+        <h4>Comparação com CrowdSec</h4>
+        <p><span class="check">✅</span> Avaliação de 4 famílias vs. CrowdSec vs. AbuseIPDB</p>
+      </div>
+    </div>
+    <div class="entreg">
+      <span class="icon">📚</span>
+      <div>
+        <h4>Trabalhos relacionados</h4>
+        <p><span class="pend">⚠️</span> Seção apoiada nas referências do prof. Diego</p>
+      </div>
+    </div>
+    <div class="entreg">
+      <span class="icon">🛠️</span>
+      <div>
+        <h4>Recomendações operacionais</h4>
+        <p><span class="pend">⚠️</span> Feeds a adotar, ajustes de assinatura, regras com validade</p>
+      </div>
+    </div>
+    <div class="entreg">
+      <span class="icon">🌐</span>
+      <div>
+        <h4>Site do projeto</h4>
+        <p><span class="check">✅</span> Este site — liaa-aparecido.github.io</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ── Repositório ── -->
+<section id="repositorio">
+  <h2>Repositório</h2>
+  <div class="cards cards-2 mt2">
+    <div class="card">
+      <div class="card-topo" style="background:var(--azul)"></div>
+      <h3>GitHub</h3>
+      <p style="margin-bottom:1rem">
+        <a href="https://github.com/Aparecido-Junior-Dev/firewall-ia" target="_blank">
+          github.com/Aparecido-Junior-Dev/firewall-ia
+        </a>
+      </p>
+      <ul style="padding-left:1.2rem;line-height:2;font-size:.9rem">
+        <li>66 arquivos versionados</li>
+        <li>140 testes automatizados (pytest)</li>
+        <li>Release v1.0 publicado</li>
+        <li>Privado — IPs reais protegidos (LGPD)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-topo" style="background:var(--verde)"></div>
+      <h3>Scripts principais</h3>
+      <ul style="padding-left:1.2rem;line-height:2.1;font-size:.88rem">
+        <li><code>correlacionar_v2.py</code> — correlação EVE × filterlog</li>
+        <li><code>propor_regra.py</code> — propõe regras via API REST</li>
+        <li><code>dashboard.py</code> — dashboard web Flask (:8080)</li>
+        <li><code>coletar_feeds.py</code> — snapshot diário dos feeds</li>
+        <li><code>split_temporal.py</code> — Fase 3: split temporal</li>
+        <li><code>avaliar_familias.py</code> — avalia famílias vs. CrowdSec</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ── Rodapé ── -->
+<footer>
+  <p>
+    <strong>Aparecido de Souza Vieira Junior</strong> ·
+    Mestrado 2026 · UNIPAMPA ·
+    Disciplina LIAA · Prof. Diego Kreutz
+  </p>
+  <p class="mt1">
+    <a href="https://github.com/Aparecido-Junior-Dev/firewall-ia" target="_blank">GitHub</a>
+    &nbsp;·&nbsp;
+    <a href="https://unipampa4all.github.io/disciplinas/liaa/20262/aparecido_regras_firewall_v2.html" target="_blank">Avaliação do professor</a>
+  </p>
+</footer>
+
+</body>
+</html>
