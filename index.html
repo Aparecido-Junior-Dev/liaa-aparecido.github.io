@@ -805,6 +805,31 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
       e que o CrowdSec e o pipeline chegam à mesma conclusão de forma independente.
     </p>
   </div>
+
+  <div class="card mt2" style="border:1px solid var(--verde);margin-top:1.5rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#065f46)"></div>
+    <h3>🧪 Validação com tráfego benigno — resultado real</h3>
+    <p style="margin-top:.6rem">Executado sobre 473.304 linhas reais de filterlog (5 dias, 28/09 a 02/10/2026):</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-top:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem;text-align:center">
+        <div style="font-size:1.8rem;font-weight:900;color:var(--verde)">0%</div>
+        <div style="font-size:.8rem;color:var(--cz)">Taxa de Falso Positivo</div>
+      </div>
+      <div style="background:var(--card2);border-radius:10px;padding:1rem;text-align:center">
+        <div style="font-size:1.8rem;font-weight:900;color:var(--verde)">336.049</div>
+        <div style="font-size:.8rem;color:var(--cz)">Fluxos benignos testados</div>
+      </div>
+      <div style="background:var(--card2);border-radius:10px;padding:1rem;text-align:center">
+        <div style="font-size:1.8rem;font-weight:900;color:var(--verde)">100%</div>
+        <div style="font-size:.8rem;color:var(--cz)">Cobertura IPs Realtek (5/5)</div>
+      </div>
+      <div style="background:var(--card2);border-radius:10px;padding:1rem;text-align:center">
+        <div style="font-size:1.8rem;font-weight:900;color:var(--verde)">5</div>
+        <div style="font-size:.8rem;color:var(--cz)">Regras IA-aparecido ativas</div>
+      </div>
+    </div>
+    <p style="margin-top:1rem;font-size:.9rem">As 5 regras de bloqueio do CVE-2021-35394 (Realtek SDK) não geraram nenhum falso positivo em 336.049 fluxos benignos reais. <strong style="color:var(--verde)">Regras aprovadas para produção.</strong></p>
+  </div>
 </section>
 
 <hr class="divider">
@@ -982,7 +1007,7 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
     <div class="entreg">
       <span class="ei">📦</span>
       <div><h4>Pipeline reproduzível</h4>
-      <p><span class="ok">✅ Concluído</span> — repositório GitHub com 66 arquivos, 140 testes, release v1.0</p></div>
+      <p><span class="ok">✅ Concluído</span> — 66 arquivos, 140 testes, release v1.0 no GitHub</p></div>
     </div>
     <div class="entreg">
       <span class="ei">🔽</span>
@@ -992,32 +1017,32 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
     <div class="entreg">
       <span class="ei">⚖️</span>
       <div><h4>Comparação com CrowdSec</h4>
-      <p><span class="ok">✅ Concluído</span> — 4 famílias avaliadas em 31 dias com split temporal</p></div>
+      <p><span class="ok">✅ Concluído</span> — 4 famílias em 31 dias, split temporal A/B</p></div>
     </div>
     <div class="entreg">
       <span class="ei">🏗️</span>
       <div><h4>Desenho arquitetural (C4)</h4>
-      <p><span class="ok">✅ Publicado</span> — C4 nível 1 e nível 2 no site do professor</p></div>
+      <p><span class="ok">✅ Publicado</span> — C4 nível 1 e 2 no site do professor</p></div>
     </div>
     <div class="entreg">
       <span class="ei">🌐</span>
       <div><h4>Site do projeto</h4>
-      <p><span class="ok">✅ Concluído</span> — aparecido-junior-dev.github.io/liaa-aparecido.github.io</p></div>
+      <p><span class="ok">✅ Concluído</span> — este site, com contexto, problema, solução, evolução</p></div>
     </div>
     <div class="entreg">
       <span class="ei">🧪</span>
       <div><h4>Validação com tráfego benigno</h4>
-      <p><span class="pend">⚠️ Pendente</span> — testbed do laboratório (caminho 1)</p></div>
+      <p><span class="ok">✅ Concluído</span> — <strong style="color:var(--verde)">0% de falso positivo</strong> · 336.049 fluxos · 100% cobertura Realtek</p></div>
     </div>
     <div class="entreg">
       <span class="ei">📐</span>
       <div><h4>Especificação das regras da IA</h4>
-      <p><span class="pend">⚠️ Pendente</span> — prompt, critérios, instruções (caminho 3)</p></div>
+      <p><span class="ok">✅ Concluído</span> — critérios, prompt, fluxo de decisão, schema JSON em <code>docs/especificacao_ia.md</code></p></div>
     </div>
     <div class="entreg">
       <span class="ei">📊</span>
       <div><h4>Mapa OPNsense × ModSecurity</h4>
-      <p><span class="pend">⚠️ Pendente</span> — entrega final proposta pelo professor (caminho 4)</p></div>
+      <p><span class="ok">✅ Concluído</span> — tabela de 48.915 alertas por tipo, cobertura e recomendações em <code>docs/mapa_cobertura.md</code></p></div>
     </div>
   </div>
 </section>
