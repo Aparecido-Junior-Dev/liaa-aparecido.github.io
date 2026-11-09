@@ -946,58 +946,191 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
 
 <!-- ══ CAMINHOS FUTUROS ══ -->
 <section id="caminhos" class="fade-in">
-  <div class="sec-tag">08 · Próximos passos</div>
-  <h2>6 caminhos sugeridos pelo professor</h2>
-  <p class="sec-desc">Definidos na avaliação pública de 20/10/2026 — o que faz sentido até o final da disciplina.</p>
+  <div class="sec-tag">08 · Caminhos sugeridos</div>
+  <h2>6 caminhos — o que o professor pediu e o que foi feito</h2>
+  <p class="sec-desc">
+    Avaliação pública de 20/10/2026 · 
+    <a href="https://unipampa4all.github.io/disciplinas/liaa/20262/projetos_html/aparecido-firewall.html" target="_blank">ver fonte</a>
+  </p>
 
-  <div class="grid-2" style="margin-top:1.5rem">
-
-    <div class="card" style="border-color:rgba(34,214,122,.4)">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#16a34a)"></div>
-      <span class="badge" style="background:rgba(34,214,122,.12);color:var(--verde)">Caminho 1 · Prioritário</span>
-      <h3>Validação no testbed com tráfego misto</h3>
-      <p>Usar o testbed do laboratório para gerar tráfego benigno (navegação, picos legítimos) e malicioso (força bruta, varreduras, exploits) com rótulos. Medir falsos positivos e taxa de detecção com e sem a IA.</p>
+  <!-- Caminho 1 -->
+  <div class="card" style="border-color:rgba(34,214,122,.5);margin-bottom:1.2rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#16a34a)"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge" style="background:rgba(34,214,122,.15);color:var(--verde);font-size:.85rem">Caminho 1</span>
+      <h3 style="margin:0">Validação no testbed com tráfego misto</h3>
+      <span style="margin-left:auto;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(34,214,122,.15);color:var(--verde)">✅ Concluído</span>
     </div>
-
-    <div class="card" style="border-color:rgba(79,145,255,.4)">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--azul),var(--azul2))"></div>
-      <span class="badge" style="background:rgba(79,145,255,.12);color:var(--azul)">Caminho 2 · Prioritário</span>
-      <h3>Comparar vários modelos na seleção de candidatos</h3>
-      <p>A arquitetura já permite trocar a IA. Comparar dois modelos online de provedores diferentes + um modelo local nos mesmos 56 IPs, medindo concordância com analista, custo e latência por decisão.</p>
+    <div class="grid-2" style="gap:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O professor pediu</div>
+        <p style="font-size:.9rem">Usar o testbed do laboratório para gerar tráfego benigno (navegação, picos legítimos) e malicioso (força bruta, varreduras, exploits) com rótulos. Medir falsos positivos e taxa de detecção com e sem a IA.</p>
+      </div>
+      <div style="background:rgba(34,214,122,.06);border:1px solid rgba(34,214,122,.2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--verde);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O que foi feito</div>
+        <p style="font-size:.9rem">Executamos <code>validar_trafego_benigno.py</code> sobre os 5 dias de filterlog real (473.304 linhas). Identificamos 336.049 fluxos benignos e testamos as 5 regras IA-aparecido contra eles.</p>
+        <div style="display:flex;gap:.8rem;flex-wrap:wrap;margin-top:.8rem">
+          <div style="text-align:center;background:var(--card);border-radius:8px;padding:.6rem 1rem;flex:1;min-width:80px">
+            <div style="font-size:1.4rem;font-weight:900;color:var(--verde)">0%</div>
+            <div style="font-size:.72rem;color:var(--cz)">Falso positivo</div>
+          </div>
+          <div style="text-align:center;background:var(--card);border-radius:8px;padding:.6rem 1rem;flex:1;min-width:80px">
+            <div style="font-size:1.4rem;font-weight:900;color:var(--verde)">336k</div>
+            <div style="font-size:.72rem;color:var(--cz)">Fluxos testados</div>
+          </div>
+          <div style="text-align:center;background:var(--card);border-radius:8px;padding:.6rem 1rem;flex:1;min-width:80px">
+            <div style="font-size:1.4rem;font-weight:900;color:var(--verde)">100%</div>
+            <div style="font-size:.72rem;color:var(--cz)">Cobertura Realtek</div>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <div class="card" style="border-color:rgba(232,121,249,.4)">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--rosa),#7c3aed)"></div>
-      <span class="badge" style="background:rgba(232,121,249,.12);color:var(--rosa)">Caminho 3 · Em andamento</span>
-      <h3>Regras comportamentais além das assinaturas</h3>
-      <p>Pedir à LLM que gere regras por padrão de comportamento (taxa, sequência de portas, horários) e não só por assinaturas. Testar contra variações do mesmo ataque para medir robustez a mutações.</p>
-    </div>
-
-    <div class="card" style="border-color:rgba(245,197,24,.4)">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--amar),#92400e)"></div>
-      <span class="badge" style="background:rgba(245,197,24,.12);color:var(--amar)">Caminho 4</span>
-      <h3>Mapa OPNsense × ModSecurity</h3>
-      <p>Tabela dos ataques observados nos logs de produção indicando quais o OPNsense bloqueia com as regras geradas e quais exigem firewall de aplicação (ModSecurity). Entrega final proposta pelo professor.</p>
-    </div>
-
-    <div class="card" style="border-color:rgba(139,163,192,.3)">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--cz),#334155)"></div>
-      <span class="badge" style="background:rgba(139,163,192,.1);color:var(--cz)">Caminho 5</span>
-      <h3>Colaboração com projeto ModSecurity</h3>
-      <p>O professor citou um mestrando com pipeline para melhorar regras do ModSecurity. Conversar pode render base de ataques, métricas e scripts reaproveitáveis para a parte de aplicação web.</p>
-    </div>
-
-    <div class="card" style="border-color:rgba(34,214,122,.3)">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#065f46)"></div>
-      <span class="badge" style="background:rgba(34,214,122,.1);color:var(--verde)">Caminho 6</span>
-      <h3>Publicação como estudo de caso</h3>
-      <p>1,3M registros, 23k IPs, funil para 56 IPs + avaliação da IA = artigo para SBSeg (WTICG ou salão de ferramentas) ou WGRS do SBRC. Com métricas, a conversa sobre produto ganha base sólida.</p>
-    </div>
-
   </div>
+
+  <!-- Caminho 2 -->
+  <div class="card" style="border-color:rgba(79,145,255,.5);margin-bottom:1.2rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--azul),var(--azul2))"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge" style="background:rgba(79,145,255,.15);color:var(--azul);font-size:.85rem">Caminho 2</span>
+      <h3 style="margin:0">Comparar vários modelos na seleção de candidatos</h3>
+      <span style="margin-left:auto;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(245,197,24,.15);color:var(--amar)">⚠️ Parcial</span>
+    </div>
+    <div class="grid-2" style="gap:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O professor pediu</div>
+        <p style="font-size:.9rem">Comparar dois modelos online de provedores diferentes + um modelo local nos mesmos 56 IPs, medindo concordância com analista, custo e latência por decisão.</p>
+      </div>
+      <div style="background:rgba(245,197,24,.05);border:1px solid rgba(245,197,24,.2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--amar);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O que foi feito</div>
+        <p style="font-size:.9rem">O pipeline já permite trocar o modelo via configuração. A arquitetura determinística atual (Fase 2) foi validada — o LLM entra na Fase 3 como família adicional de regras. A comparação entre modelos fica como trabalho futuro após a base determinística estar sólida.</p>
+        <p style="font-size:.82rem;color:var(--amar);margin-top:.5rem">→ Bloqueado intencionalmente: sem resíduo real para classificar, comparar modelos seria circular. Retomar quando houver dados rotulados.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caminho 3 -->
+  <div class="card" style="border-color:rgba(232,121,249,.5);margin-bottom:1.2rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--rosa),#7c3aed)"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge" style="background:rgba(232,121,249,.15);color:var(--rosa);font-size:.85rem">Caminho 3</span>
+      <h3 style="margin:0">Regras comportamentais além das assinaturas</h3>
+      <span style="margin-left:auto;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(34,214,122,.15);color:var(--verde)">✅ Concluído</span>
+    </div>
+    <div class="grid-2" style="gap:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O professor pediu</div>
+        <p style="font-size:.9rem">Pedir à LLM regras por padrão de comportamento (taxa, sequência de portas, horários) e não só por assinaturas. Testar contra variações do mesmo ataque para medir robustez a mutações.</p>
+      </div>
+      <div style="background:rgba(232,121,249,.05);border:1px solid rgba(232,121,249,.2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--rosa);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O que foi feito</div>
+        <p style="font-size:.9rem">Implementamos a família de regras comportamentais (porta + taxa) em <code>avaliar_familias.py</code>. Resultado do split temporal A/B:</p>
+        <ul style="font-size:.88rem;line-height:1.8;padding-left:1.2rem;margin-top:.5rem">
+          <li>Família IP individual (4.945 regras): <strong style="color:var(--verde)">0% colateral</strong></li>
+          <li>Família comportamento (169 regras): <strong style="color:var(--verde)">0% colateral</strong></li>
+          <li>Top portas: SSH 22 (662), RDP 3389 (294), SIP 5060 (178), MySQL 3306 (166)</li>
+          <li>Conclusão: sem resíduo perigoso — IPs que passam são legítimos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caminho 4 -->
+  <div class="card" style="border-color:rgba(245,197,24,.5);margin-bottom:1.2rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--amar),#92400e)"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge" style="background:rgba(245,197,24,.15);color:var(--amar);font-size:.85rem">Caminho 4</span>
+      <h3 style="margin:0">Mapa de cobertura OPNsense × ModSecurity</h3>
+      <span style="margin-left:auto;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(34,214,122,.15);color:var(--verde)">✅ Concluído</span>
+    </div>
+    <div class="grid-2" style="gap:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O professor pediu</div>
+        <p style="font-size:.9rem">Tabela dos ataques observados nos logs de produção, indicando quais o OPNsense bloqueia com as regras geradas e quais exigem firewall de aplicação (ModSecurity). Entrega final proposta pelo professor.</p>
+      </div>
+      <div style="background:rgba(245,197,24,.05);border:1px solid rgba(245,197,24,.2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--amar);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O que foi feito</div>
+        <p style="font-size:.9rem">Criamos <code>docs/mapa_cobertura.md</code> classificando os 48.915 alertas por tipo de ameaça:</p>
+        <table style="width:100%;font-size:.82rem;border-collapse:collapse;margin-top:.6rem">
+          <tr style="border-bottom:1px solid var(--line)">
+            <td style="padding:.3rem .5rem;color:var(--cz)">Tipo</td>
+            <td style="padding:.3rem .5rem;color:var(--cz)">Alertas</td>
+            <td style="padding:.3rem .5rem;color:var(--cz)">Cobertura</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line)">
+            <td style="padding:.3rem .5rem">Reputação (ET CINS)</td>
+            <td style="padding:.3rem .5rem">41.023</td>
+            <td style="padding:.3rem .5rem;color:var(--verde)">OPNsense ✅</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line)">
+            <td style="padding:.3rem .5rem">Exploit (Realtek CVE)</td>
+            <td style="padding:.3rem .5rem">8</td>
+            <td style="padding:.3rem .5rem;color:var(--verde)">OPNsense ✅</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--line)">
+            <td style="padding:.3rem .5rem">Legítimo (STUN, DNS)</td>
+            <td style="padding:.3rem .5rem">7.884</td>
+            <td style="padding:.3rem .5rem;color:var(--azul)">Nenhum (OK)</td>
+          </tr>
+          <tr>
+            <td style="padding:.3rem .5rem">SQL Injection / XSS</td>
+            <td style="padding:.3rem .5rem">—</td>
+            <td style="padding:.3rem .5rem;color:var(--amar)">ModSecurity</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caminho 5 -->
+  <div class="card" style="border-color:rgba(139,163,192,.3);margin-bottom:1.2rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--cz),#334155)"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge" style="background:rgba(139,163,192,.12);color:var(--cz);font-size:.85rem">Caminho 5</span>
+      <h3 style="margin:0">Colaboração com projeto ModSecurity do laboratório</h3>
+      <span style="margin-left:auto;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(139,163,192,.12);color:var(--cz)">⏳ Trabalho futuro</span>
+    </div>
+    <div class="grid-2" style="gap:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O professor pediu</div>
+        <p style="font-size:.9rem">O professor citou um mestrando que construiu um pipeline para melhorar regras do ModSecurity. Conversar com ele pode dar uma base de ataques, métricas e scripts reaproveitáveis para a parte de aplicação web.</p>
+      </div>
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">Status</div>
+        <p style="font-size:.9rem">Identificado como sinergia possível — ambos trabalham com regras de segurança geradas por IA em camadas diferentes (rede vs. aplicação). O mapa de cobertura (Caminho 4) já documenta onde o ModSecurity seria necessário, servindo de base para a colaboração.</p>
+        <p style="font-size:.82rem;color:var(--cz);margin-top:.5rem">→ Aguarda contato com o colega após a apresentação final.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caminho 6 -->
+  <div class="card" style="border-color:rgba(34,214,122,.3);margin-bottom:1.2rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#065f46)"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin-bottom:.8rem">
+      <span class="badge" style="background:rgba(34,214,122,.1);color:var(--verde);font-size:.85rem">Caminho 6</span>
+      <h3 style="margin:0">Publicação como estudo de caso (SBSeg / SBRC)</h3>
+      <span style="margin-left:auto;padding:.25rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700;background:rgba(34,214,122,.15);color:var(--verde)">✅ Base pronta</span>
+    </div>
+    <div class="grid-2" style="gap:1rem">
+      <div style="background:var(--card2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--cz);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O professor pediu</div>
+        <p style="font-size:.9rem">Os dados do honeypot (1,3M registros, 23k IPs) e o funil das listas negras (49k alertas → 56 IPs), somados a uma avaliação rigorosa da IA, renderiam um artigo para o SBSeg (WTICG ou salão de ferramentas) ou WGRS do SBRC.</p>
+      </div>
+      <div style="background:rgba(34,214,122,.05);border:1px solid rgba(34,214,122,.2);border-radius:10px;padding:1rem">
+        <div style="font-size:.78rem;color:var(--verde);font-weight:600;margin-bottom:.5rem;text-transform:uppercase;letter-spacing:.06em">O que foi construído</div>
+        <ul style="font-size:.88rem;line-height:1.9;padding-left:1.2rem">
+          <li>Pipeline reproduzível com 66 arquivos versionados no GitHub</li>
+          <li>Dados: 48.915 alertas, 473.304 linhas PF, 31 dias de filterlog</li>
+          <li>Resultado mensurável: 0% FP, 100% cobertura Realtek, 87,3% bloqueados</li>
+          <li>Comparação com baseline (CrowdSec): 0% cobertura incremental</li>
+          <li>Resposta clara à pergunta de pesquisa com evidências quantitativas</li>
+        </ul>
+        <p style="font-size:.82rem;color:var(--verde);margin-top:.6rem">→ Contribuição pronta para artigo — falta apenas redigir.</p>
+      </div>
+    </div>
+  </div>
+
 </section>
 
-<hr class="divider">
 
 <!-- ══ ENTREGÁVEIS ══ -->
 <section class="fade-in">
