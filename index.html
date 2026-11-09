@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Faro · Regras de Firewall com IA · LIAA 2026</title>
-<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
 <style>
 /* ══════════════════════════════════════════════
    RESET & VARIÁVEIS
@@ -609,6 +608,7 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
 
 <hr class="divider">
 
+
 <hr class="divider">
 
 <!-- ══ MAPA DE ATAQUES ══ -->
@@ -616,72 +616,37 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
   <div class="sec-tag">04 · Mapa de ataques</div>
   <h2>De onde vêm os ataques</h2>
   <p class="sec-desc">
-    6.725 IPs externos únicos detectados — distribuídos por mais de 40 países.
-    Dados reais dos 48.915 alertas analisados.
+    6.725 IPs externos únicos detectados em 48.915 alertas — distribuídos por mais de 40 países.
   </p>
-
-  <!-- legenda -->
-  <div id="map-legend" style="display:flex;gap:1.4rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center">
-    <div style="display:flex;align-items:center;gap:.45rem;font-size:.82rem">
-      <svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="#f04d4d" opacity=".9"/></svg>
-      Alta &gt;1.000 alertas
-    </div>
-    <div style="display:flex;align-items:center;gap:.45rem;font-size:.82rem">
-      <svg width="14" height="14"><circle cx="7" cy="7" r="5" fill="#f5c518" opacity=".9"/></svg>
-      Média 100–1.000
-    </div>
-    <div style="display:flex;align-items:center;gap:.45rem;font-size:.82rem">
-      <svg width="14" height="14"><circle cx="7" cy="7" r="4" fill="#4f91ff" opacity=".9"/></svg>
-      Baixa &lt;100
-    </div>
-    <div style="display:flex;align-items:center;gap:.45rem;font-size:.82rem;margin-left:auto">
-      <svg width="14" height="14"><circle cx="7" cy="7" r="6" fill="#22d67a" opacity=".9"/></svg>
-      Brasil (alvo)
+  <div style="display:flex;gap:1.4rem;flex-wrap:wrap;margin-bottom:1rem;align-items:center;font-size:.82rem">
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f04d4d;margin-right:5px;vertical-align:middle"></span>Alta &gt;1.000 alertas</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#f5c518;margin-right:5px;vertical-align:middle"></span>Média 100–1.000</span>
+    <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4f91ff;margin-right:5px;vertical-align:middle"></span>Baixa &lt;100</span>
+    <span style="margin-left:auto"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#22d67a;margin-right:5px;vertical-align:middle"></span>Brasil (alvo)</span>
+  </div>
+  <div id="map-container" style="position:relative;border-radius:16px;overflow:hidden;background:#060e1a;border:1px solid #1e3050">
+    <canvas id="map-canvas" style="display:block;width:100%"></canvas>
+    <div id="map-tip" style="position:absolute;display:none;pointer-events:none;background:rgba(6,14,26,.96);border:1px solid #4f91ff;border-radius:8px;padding:.5rem .9rem;font-size:.82rem;color:#e8f0fe;white-space:nowrap;z-index:10"></div>
+    <div style="position:absolute;bottom:10px;right:12px;background:rgba(6,14,26,.85);border:1px solid #1e3050;border-radius:8px;padding:.4rem .8rem;font-size:.76rem;pointer-events:none">
+      <span style="color:#8ba3c0">IPs únicos: </span><span style="color:#4f91ff;font-weight:800">6.725</span>
+      &nbsp;<span style="color:#8ba3c0">Países: </span><span style="color:#22d67a;font-weight:800">40+</span>
     </div>
   </div>
-
-  <!-- container do mapa -->
-  <div id="map-container" style="position:relative;border-radius:16px;overflow:hidden;background:#060e1a;border:1px solid #1e3050;cursor:crosshair">
-    <canvas id="map-bg"  style="display:block;width:100%"></canvas>
-    <canvas id="map-anim" style="position:absolute;top:0;left:0;width:100%"></canvas>
-    <!-- tooltip -->
-    <div id="map-tip" style="
-      position:absolute;display:none;pointer-events:none;
-      background:rgba(6,14,26,.95);border:1px solid #4f91ff;
-      border-radius:8px;padding:.55rem 1rem;font-size:.82rem;
-      color:#e8f0fe;white-space:nowrap;z-index:10;
-    "></div>
-    <!-- contador -->
-    <div style="position:absolute;bottom:12px;right:14px;
-      background:rgba(6,14,26,.88);border:1px solid #1e3050;
-      border-radius:8px;padding:.45rem .9rem;font-size:.78rem;pointer-events:none">
-      <span style="color:#8ba3c0">IPs únicos: </span>
-      <span style="color:#4f91ff;font-weight:800">6.725</span>
-      &nbsp;
-      <span style="color:#8ba3c0">Países: </span>
-      <span style="color:#22d67a;font-weight:800">40+</span>
-    </div>
-  </div>
-
-  <!-- top países -->
   <div class="grid-3" style="margin-top:1.5rem">
     <div class="card">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--verm),#7f1d1d)"></div>
-      <h3 style="font-size:.95rem">🇫🇷 França / Europa Ocidental</h3>
-      <p><strong style="color:var(--verm)">10.271 alertas</strong> — maior fonte<br>
-      Blocos 85.217.140.x · ET CINS<br>Varredura contínua de portas</p>
+      <div class="card-accent" style="background:linear-gradient(90deg,#f04d4d,#7f1d1d)"></div>
+      <h3 style="font-size:.95rem">&#127467;&#127479; França / Europa Ocidental</h3>
+      <p><strong style="color:#f04d4d">10.271 alertas</strong> — maior fonte<br>Blocos 85.217.140.x · ET CINS<br>Varredura contínua de portas</p>
     </div>
     <div class="card">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--verm),#7f1d1d)"></div>
-      <h3 style="font-size:.95rem">🇺🇸 Estados Unidos</h3>
-      <p><strong style="color:var(--verm)">6.380 alertas</strong> — AWS e DCs<br>
-      Blocos 147.185.x · 66.132.x<br>SSH, RDP, MySQL scan</p>
+      <div class="card-accent" style="background:linear-gradient(90deg,#f04d4d,#7f1d1d)"></div>
+      <h3 style="font-size:.95rem">&#127482;&#127480; Estados Unidos</h3>
+      <p><strong style="color:#f04d4d">6.380 alertas</strong> — AWS e DCs<br>Blocos 147.185.x · 66.132.x<br>SSH, RDP, MySQL scan</p>
     </div>
     <div class="card">
-      <div class="card-accent" style="background:linear-gradient(90deg,var(--amar),#92400e)"></div>
-      <h3 style="font-size:.95rem">🇨🇭 Suíça · 🇳🇱 Holanda</h3>
-      <p><strong style="color:var(--amar)">3.627 alertas</strong> — VPNs<br>
-      Blocos 195.184.76.x · 91.231.x<br>Tráfego anônimo / saída</p>
+      <div class="card-accent" style="background:linear-gradient(90deg,#f5c518,#92400e)"></div>
+      <h3 style="font-size:.95rem">Suíça · Holanda</h3>
+      <p><strong style="color:#f5c518">3.627 alertas</strong> — VPNs e proxies<br>Blocos 195.184.76.x · 91.231.x<br>Tráfego anônimo de saída</p>
     </div>
   </div>
 </section>
@@ -956,391 +921,307 @@ const obs=new IntersectionObserver(entries=>{
 document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
 
 // ══════════════════════════════════════════════
-// MAPA MUNDI — D3 Natural Earth + Canvas animado
-// ══════════════════════════════════════════════
-(function(){
+// ══════════════════════════════════════
+// MAPA MUNDI — Canvas puro, sem CDN externo
+// ══════════════════════════════════════
+(function initMap() {
+  var cont   = document.getElementById('map-container');
+  var canvas = document.getElementById('map-canvas');
+  var tip    = document.getElementById('map-tip');
+  if (!cont || !canvas) return;
+  var ctx = canvas.getContext('2d');
 
-const container = document.getElementById('map-container');
-const bgCanvas  = document.getElementById('map-bg');
-const animCanvas= document.getElementById('map-anim');
-const tip       = document.getElementById('map-tip');
-if(!container || !bgCanvas) return;
-
-// ── Dados dos países ───────────────────────────
-const ATTACKS = [
-  {name:'França',       lat:46.2,  lon:2.2,    count:10271, level:'high'},
-  {name:'Estados Unidos',lat:37.1, lon:-95.7,  count:6380,  level:'high'},
-  {name:'Suíça',        lat:46.8,  lon:8.2,    count:2289,  level:'high'},
-  {name:'Holanda',      lat:52.1,  lon:5.3,    count:1338,  level:'high'},
-  {name:'Bulgária',     lat:42.7,  lon:25.5,   count:1069,  level:'high'},
-  {name:'Alemanha',     lat:51.2,  lon:10.5,   count:1270,  level:'high'},
-  {name:'China',        lat:35.9,  lon:104.2,  count:1282,  level:'high'},
-  {name:'Rússia',       lat:61.5,  lon:90.0,   count:818,   level:'medium'},
-  {name:'Reino Unido',  lat:55.4,  lon:-3.4,   count:1115,  level:'high'},
-  {name:'Singapura',    lat:1.3,   lon:103.8,  count:831,   level:'medium'},
-  {name:'Índia',        lat:20.6,  lon:78.9,   count:380,   level:'medium'},
-  {name:'Japão',        lat:36.2,  lon:138.3,  count:290,   level:'medium'},
-  {name:'Coréia do Sul',lat:35.9,  lon:127.8,  count:185,   level:'low'},
-  {name:'Hong Kong',    lat:22.3,  lon:114.2,  count:452,   level:'medium'},
-  {name:'Turquia',      lat:38.9,  lon:35.2,   count:265,   level:'low'},
-  {name:'Ucrânia',      lat:48.4,  lon:31.2,   count:198,   level:'low'},
-  {name:'Irã',          lat:32.4,  lon:53.7,   count:162,   level:'low'},
-  {name:'Itália',       lat:41.9,  lon:12.6,   count:320,   level:'medium'},
-  {name:'Espanha',      lat:40.5,  lon:-3.7,   count:280,   level:'medium'},
-  {name:'Romênia',      lat:45.9,  lon:24.9,   count:240,   level:'low'},
-];
-
-const BRASIL = {lat:-14.2, lon:-51.9};
-
-// ── Projeção Mercator simples ──────────────────
-function project(lat, lon, W, H) {
-  const x = ((lon + 180) / 360) * W;
-  const latR = lat * Math.PI / 180;
-  const mercN = Math.log(Math.tan(Math.PI/4 + latR/2));
-  const y = (H/2) - (H * mercN / (2*Math.PI));
-  return {x, y};
-}
-
-// ── Resize ────────────────────────────────────
-function resize() {
-  const W = container.clientWidth;
-  const H = Math.round(W * 0.5);
-  bgCanvas.width  = W; bgCanvas.height  = H;
-  animCanvas.width= W; animCanvas.height= H;
-  bgCanvas.style.height  = H + 'px';
-  animCanvas.style.height= H + 'px';
-  container.style.height = H + 'px';
-  return {W, H};
-}
-
-// ── Desenhar mapa base ─────────────────────────
-async function drawBase(W, H) {
-  const ctx = bgCanvas.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-
-  // Fundo gradiente oceano
-  const grad = ctx.createLinearGradient(0,0,0,H);
-  grad.addColorStop(0, '#040c18');
-  grad.addColorStop(1, '#060e1a');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,W,H);
-
-  // Grade suave
-  ctx.strokeStyle = 'rgba(79,145,255,0.06)';
-  ctx.lineWidth = .8;
-  for(let lon=-180; lon<=180; lon+=30) {
-    const {x} = project(0, lon, W, H);
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  function merc(lat, lon, W, H) {
+    var x = ((lon + 180) / 360) * W;
+    var r = lat * Math.PI / 180;
+    var n = Math.log(Math.tan(Math.PI / 4 + r / 2));
+    var y = (H / 2) - (H * n / (2 * Math.PI));
+    return { x: x, y: y };
   }
-  for(let lat=-60; lat<=80; lat+=30) {
-    const {y} = project(lat, 0, W, H);
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+
+  var PAISES = [
+    { name: 'Franca',        lat: 46.2,  lon:   2.2, count: 10271, level: 'high'   },
+    { name: 'EUA',           lat: 37.1,  lon: -95.7, count:  6380, level: 'high'   },
+    { name: 'Suica',         lat: 46.8,  lon:   8.2, count:  2289, level: 'high'   },
+    { name: 'Holanda',       lat: 52.1,  lon:   5.3, count:  1338, level: 'high'   },
+    { name: 'Bulgaria',      lat: 42.7,  lon:  25.5, count:  1069, level: 'high'   },
+    { name: 'Alemanha',      lat: 51.2,  lon:  10.5, count:  1270, level: 'high'   },
+    { name: 'China',         lat: 35.9,  lon: 104.2, count:  1282, level: 'high'   },
+    { name: 'Russia',        lat: 61.5,  lon:  90.0, count:   818, level: 'medium' },
+    { name: 'Reino Unido',   lat: 55.4,  lon:  -3.4, count:  1115, level: 'high'   },
+    { name: 'Singapura',     lat:  1.3,  lon: 103.8, count:   831, level: 'medium' },
+    { name: 'India',         lat: 20.6,  lon:  78.9, count:   380, level: 'medium' },
+    { name: 'Japao',         lat: 36.2,  lon: 138.3, count:   290, level: 'medium' },
+    { name: 'Coreia do Sul', lat: 35.9,  lon: 127.8, count:   185, level: 'low'    },
+    { name: 'Hong Kong',     lat: 22.3,  lon: 114.2, count:   452, level: 'medium' },
+    { name: 'Turquia',       lat: 38.9,  lon:  35.2, count:   265, level: 'low'    },
+    { name: 'Ucrania',       lat: 48.4,  lon:  31.2, count:   198, level: 'low'    },
+    { name: 'Ira',           lat: 32.4,  lon:  53.7, count:   162, level: 'low'    },
+    { name: 'Italia',        lat: 41.9,  lon:  12.6, count:   320, level: 'medium' },
+    { name: 'Espanha',       lat: 40.5,  lon:  -3.7, count:   280, level: 'medium' },
+    { name: 'Romania',       lat: 45.9,  lon:  24.9, count:   240, level: 'low'    },
+  ];
+  var BRASIL_LAT = -14.2, BRASIL_LON = -51.9;
+
+  // Continentes como polilinha lat/lon
+  var LAND = [
+    // America do Norte
+    [[-168,71],[-95,73],[-55,68],[-55,50],[-64,44],[-66,34],[-80,25],[-88,16],[-92,20],[-98,23],[-110,25],[-120,35],[-125,49],[-140,60],[-168,60]],
+    // America Central
+    [[-92,18],[-83,10],[-77,7],[-75,11],[-83,10],[-88,16],[-92,18]],
+    // America do Sul
+    [[-82,12],[-62,11],[-34,5],[-35,-5],[-38,-20],[-40,-22],[-44,-23],[-53,-34],[-58,-38],[-65,-44],[-66,-54],[-72,-50],[-75,-45],[-72,-40],[-70,-18],[-75,-10],[-80,5],[-82,12]],
+    // Europa Ocidental
+    [[-10,36],[-8,44],[2,49],[8,49],[16,49],[22,42],[28,42],[32,48],[32,55],[22,57],[15,58],[10,55],[5,58],[-5,55],[-10,52],[-9,40],[-6,37],[5,36],[16,38],[22,38],[18,40],[-10,36]],
+    // Escandinavia
+    [[5,57],[8,58],[16,57],[20,60],[26,65],[22,72],[14,66],[8,58],[5,57]],
+    // Russia e Asia Norte
+    [[28,55],[40,72],[80,73],[140,72],[170,65],[160,52],[132,43],[110,43],[90,42],[70,44],[50,43],[40,45],[36,50],[28,55]],
+    // Oriente Medio
+    [[36,28],[44,28],[55,24],[58,22],[50,24],[58,28],[52,30],[46,32],[36,35],[34,30],[36,28]],
+    // Africa
+    [[-18,15],[-8,36],[8,38],[26,34],[34,28],[42,12],[44,2],[40,-10],[36,-20],[28,-34],[12,-28],[8,-4],[4,8],[-8,2],[-16,8],[-18,15]],
+    // India
+    [[66,24],[72,22],[80,8],[80,12],[78,22],[80,28],[76,36],[68,36],[64,30],[66,24]],
+    // China
+    [[80,30],[90,30],[100,20],[104,10],[108,16],[106,22],[120,26],[122,32],[130,42],[136,44],[130,43],[122,40],[116,38],[106,30],[100,26],[90,28],[80,30]],
+    // Japao
+    [[130,30],[135,35],[141,40],[141,43],[130,43],[130,30]],
+    // Sudeste Asiatico
+    [[100,20],[104,10],[100,2],[103,1],[105,10],[108,16],[100,20]],
+    // Australia
+    [[114,-22],[126,-14],[136,-12],[140,-18],[148,-18],[150,-22],[152,-28],[150,-38],[140,-36],[130,-32],[116,-32],[114,-22]],
+    // Groelandia
+    [[-52,60],[-20,64],[-20,76],[-40,84],[-60,66],[-52,60]],
+  ];
+
+  function lc(level) {
+    if (level === 'high')   return {r:240, g:77,  b:77 };
+    if (level === 'medium') return {r:245, g:197, b:24 };
+    return                         {r:79,  g:145, b:255};
   }
-  // Equador destacado
-  ctx.strokeStyle = 'rgba(79,145,255,0.12)';
-  ctx.lineWidth = 1;
-  const {y:ye} = project(0,0,W,H);
-  ctx.beginPath(); ctx.moveTo(0,ye); ctx.lineTo(W,ye); ctx.stroke();
+  function rc(c, a) { return 'rgba('+c.r+','+c.g+','+c.b+','+a+')'; }
 
-  // Carregar e desenhar GeoJSON
-  try {
-    const resp = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
-    const topo  = await resp.json();
-    // Converter topojson para geojson via script inline
-    const geojson = topojson.feature(topo, topo.objects.countries);
+  var W, H, nodes, brasilPt, packets = [], phases = {};
 
-    ctx.save();
-    geojson.features.forEach(feat => {
+  function setup() {
+    W = cont.clientWidth || 800;
+    H = Math.round(W * 0.52);
+    canvas.width  = W;
+    canvas.height = H;
+    canvas.style.height = H + 'px';
+    cont.style.minHeight = H + 'px';
+    nodes = PAISES.map(function(p) {
+      var pt = merc(p.lat, p.lon, W, H);
+      return { name:p.name, count:p.count, level:p.level, x:pt.x, y:pt.y, col:lc(p.level) };
+    });
+    brasilPt = merc(BRASIL_LAT, BRASIL_LON, W, H);
+    nodes.forEach(function(n) {
+      if (!phases[n.name]) phases[n.name] = Math.random() * Math.PI * 2;
+    });
+  }
+
+  function drawBg() {
+    var g = ctx.createLinearGradient(0,0,0,H);
+    g.addColorStop(0,   '#030a14');
+    g.addColorStop(0.5, '#060e1a');
+    g.addColorStop(1,   '#040c16');
+    ctx.fillStyle = g;
+    ctx.fillRect(0,0,W,H);
+
+    // Grade
+    ctx.strokeStyle = 'rgba(79,145,255,0.05)';
+    ctx.lineWidth = 0.5;
+    for (var lon=-180; lon<=180; lon+=30) {
+      var px = merc(0,lon,W,H).x;
+      ctx.beginPath(); ctx.moveTo(px,0); ctx.lineTo(px,H); ctx.stroke();
+    }
+    for (var lat=-60; lat<=75; lat+=30) {
+      var py = merc(lat,0,W,H).y;
+      ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(W,py); ctx.stroke();
+    }
+    // Equador
+    ctx.strokeStyle = 'rgba(79,145,255,0.12)';
+    ctx.lineWidth = 0.8;
+    ctx.setLineDash([5,8]);
+    var ye = merc(0,0,W,H).y;
+    ctx.beginPath(); ctx.moveTo(0,ye); ctx.lineTo(W,ye); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Continentes
+    LAND.forEach(function(poly) {
       ctx.beginPath();
-      drawGeoFeature(ctx, feat, W, H);
-      ctx.fillStyle   = 'rgba(22,38,64,0.9)';
-      ctx.strokeStyle = 'rgba(46,74,108,0.7)';
-      ctx.lineWidth   = 0.5;
+      poly.forEach(function(pt,i) {
+        var p = merc(pt[1], pt[0], W, H);
+        if (i===0) ctx.moveTo(p.x, p.y);
+        else ctx.lineTo(p.x, p.y);
+      });
+      ctx.closePath();
+      ctx.fillStyle   = 'rgba(26,48,88,0.88)';
+      ctx.strokeStyle = 'rgba(50,88,140,0.55)';
+      ctx.lineWidth   = 0.6;
       ctx.fill();
       ctx.stroke();
     });
-    ctx.restore();
-  } catch(e) {
-    // fallback: desenha continentes simplificados se CDN falhar
-    drawFallback(ctx, W, H);
+
+    // Labels oceanos
+    ctx.fillStyle = 'rgba(79,145,255,0.15)';
+    var fs = Math.max(9, W*0.011);
+    ctx.font = fs+'px sans-serif';
+    ctx.textAlign = 'center';
+    [['Pacifico',0,-145],['Atlantico',10,-28],['Indico',-18,74]].forEach(function(o) {
+      var p = merc(o[1],o[2],W,H);
+      ctx.fillText(o[0], p.x, p.y);
+    });
   }
 
-  // Nomes de oceanos
-  ctx.fillStyle = 'rgba(79,145,255,0.18)';
-  ctx.font = `${Math.max(9,W*0.012)}px sans-serif`;
-  ctx.textAlign = 'center';
-  const oceans = [
-    {name:'Pacífico', lat:0,    lon:-140},
-    {name:'Atlântico',lat:10,   lon:-25},
-    {name:'Índico',   lat:-15,  lon:75},
-    {name:'Ártico',   lat:80,   lon:0},
-  ];
-  oceans.forEach(o => {
-    const {x,y} = project(o.lat, o.lon, W, H);
-    if(x>0&&x<W&&y>0&&y<H) ctx.fillText(o.name, x, y);
-  });
-}
-
-// GeoJSON path drawer
-function drawGeoFeature(ctx, feat, W, H) {
-  const geom = feat.geometry;
-  if(!geom) return;
-  const polys = geom.type === 'Polygon' ? [geom.coordinates]
-              : geom.type === 'MultiPolygon' ? geom.coordinates : [];
-  polys.forEach(poly => {
-    poly.forEach(ring => {
-      ring.forEach((pt, i) => {
-        const {x,y} = project(pt[1], pt[0], W, H);
-        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-      });
-      ctx.closePath();
-    });
-  });
-}
-
-// Fallback simples se CDN não carregar
-function drawFallback(ctx, W, H) {
-  ctx.fillStyle = 'rgba(22,38,64,0.85)';
-  ctx.strokeStyle = 'rgba(46,74,108,0.6)';
-  ctx.lineWidth = 0.8;
-  // Polígonos aproximados dos continentes
-  const continents = [
-    // América do Norte
-    [[[-168,72],[-52,72],[-52,25],[-85,15],[-118,20],[-168,60]]],
-    // América do Sul
-    [[[-82,12],[-34,5],[-34,-55],[-70,-55],[-82,12]]],
-    // Europa
-    [[[−10,36],[40,36],[40,71],[−10,71]]],
-    // África
-    [[[-18,38],[52,38],[52,-35],[-18,-35]]],
-    // Ásia
-    [[[26,72],[180,72],[180,0],[100,-10],[26,0]]],
-    // Austrália
-    [[[114,-22],[154,-22],[154,-44],[114,-44]]],
-  ];
-  continents.forEach(rings => {
-    ctx.beginPath();
-    rings.forEach(ring => {
-      ring.forEach((pt,i) => {
-        const {x,y} = project(pt[1], pt[0], W, H);
-        i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
-      });
-      ctx.closePath();
-    });
-    ctx.fill(); ctx.stroke();
-  });
-}
-
-// ── Partículas ────────────────────────────────
-const packets = [];
-
-function addPacket(srcX, srcY, dstX, dstY, color) {
-  const dur = 1600 + Math.random()*1000;
-  packets.push({
-    srcX, srcY, dstX, dstY,
-    color,
-    start: performance.now(),
-    dur,
-    // Ponto de controle curvo (arco sobre o oceano)
-    cpX: (srcX + dstX) / 2 + (Math.random()-0.5)*80,
-    cpY: Math.min(srcY, dstY) - 60 - Math.random()*60,
-    trail: [],
-  });
-}
-
-function colorForLevel(level) {
-  if(level==='high')   return '#f04d4d';
-  if(level==='medium') return '#f5c518';
-  return '#4f91ff';
-}
-
-function easeInOut(t) { return t<.5 ? 2*t*t : -1+(4-2*t)*t; }
-
-function bezier(t, p0, p1, p2) {
-  return (1-t)*(1-t)*p0 + 2*(1-t)*t*p1 + t*t*p2;
-}
-
-// ── Animação principal ─────────────────────────
-let {W, H} = resize();
-drawBase(W, H);
-
-// Pontos de ataque e brasil no canvas
-function screenPt(lat, lon) { return project(lat, lon, W, H); }
-
-let atacantes = ATTACKS.map(a => ({...a, ...screenPt(a.lat, a.lon)}));
-let brasilPt  = screenPt(BRASIL.lat, BRASIL.lon);
-
-// Lançar pacotes periodicamente
-function schedulePkt(a) {
-  function fire() {
-    const b = brasilPt;
-    addPacket(a.x, a.y, b.x, b.y, colorForLevel(a.level));
-    const delay = a.level==='high'   ? 300 + Math.random()*300
-                : a.level==='medium' ? 600 + Math.random()*400
-                :                      900 + Math.random()*600;
-    setTimeout(fire, delay);
-  }
-  setTimeout(fire, Math.random()*2000);
-}
-atacantes.forEach(schedulePkt);
-
-// Arcos estáticos (linhas de trajetória)
-function drawArcs(ctx) {
-  atacantes.forEach(a => {
-    const b = brasilPt;
-    const cpX = (a.x + b.x)/2 + (a.x > b.x ? 20 : -20);
-    const cpY = Math.min(a.y, b.y) - Math.abs(a.x - b.x)*0.15;
-    ctx.beginPath();
-    ctx.moveTo(a.x, a.y);
-    ctx.quadraticCurveTo(cpX, cpY, b.x, b.y);
-    ctx.strokeStyle = colorForLevel(a.level).replace(')',',0.12)').replace('rgb','rgba').replace('#f04d4d','rgba(240,77,77,0.1)').replace('#f5c518','rgba(245,197,24,0.1)').replace('#4f91ff','rgba(79,145,255,0.1)');
-    // simplificado:
-    const base = a.level==='high' ? 'rgba(240,77,77,0.08)' : a.level==='medium' ? 'rgba(245,197,24,0.07)' : 'rgba(79,145,255,0.06)';
-    ctx.strokeStyle = base;
-    ctx.lineWidth   = a.level==='high' ? 1 : 0.7;
-    ctx.stroke();
-  });
-}
-
-// Círculos pulsantes
-const pulsePhase = {};
-atacantes.forEach(a => { pulsePhase[a.name] = Math.random()*Math.PI*2; });
-
-function drawNodes(ctx, now) {
-  // Brasil
-  const b = brasilPt;
-  const pb = (Math.sin(now/600)*0.5+0.5);
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, 10+pb*8, 0, Math.PI*2);
-  ctx.fillStyle = `rgba(34,214,122,${0.06+pb*0.06})`;
-  ctx.fill();
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, 5, 0, Math.PI*2);
-  ctx.fillStyle = '#22d67a';
-  ctx.fill();
-  // Label Brasil
-  ctx.fillStyle = '#22d67a';
-  ctx.font = `bold ${Math.max(10,W*0.013)}px sans-serif`;
-  ctx.textAlign = 'center';
-  ctx.fillText('● BRASIL', b.x, b.y - 12);
-
-  // Atacantes
-  atacantes.forEach(a => {
-    const phase = pulsePhase[a.name];
-    const p = (Math.sin(now/800 + phase)*0.5+0.5);
-    const col = colorForLevel(a.level);
-    const baseR = a.level==='high' ? 5 : a.level==='medium' ? 4 : 3;
-
-    // Anel pulsante
-    ctx.beginPath();
-    ctx.arc(a.x, a.y, baseR+4+p*6, 0, Math.PI*2);
-    const alpha = 0.04+p*0.08;
-    ctx.fillStyle = col.replace('#f04d4d',`rgba(240,77,77,${alpha})`).replace('#f5c518',`rgba(245,197,24,${alpha})`).replace('#4f91ff',`rgba(79,145,255,${alpha})`);
-    if(col==='#f04d4d') ctx.fillStyle=`rgba(240,77,77,${alpha})`;
-    else if(col==='#f5c518') ctx.fillStyle=`rgba(245,197,24,${alpha})`;
-    else ctx.fillStyle=`rgba(79,145,255,${alpha})`;
-    ctx.fill();
-
-    // Ponto
-    ctx.beginPath();
-    ctx.arc(a.x, a.y, baseR, 0, Math.PI*2);
-    ctx.fillStyle = col;
-    ctx.shadowColor = col;
-    ctx.shadowBlur  = 8;
-    ctx.fill();
-    ctx.shadowBlur = 0;
-  });
-}
-
-function drawPackets(ctx, now) {
-  for(let i=packets.length-1; i>=0; i--) {
-    const p = packets[i];
-    const t = Math.min((now - p.start) / p.dur, 1);
-    if(t >= 1) { packets.splice(i,1); continue; }
-    const ease = easeInOut(t);
-    const px = bezier(ease, p.srcX, p.cpX, p.dstX);
-    const py = bezier(ease, p.srcY, p.cpY, p.dstY);
-
-    // Rastro
-    p.trail.push({x:px, y:py});
-    if(p.trail.length > 12) p.trail.shift();
-
-    // Desenhar rastro
-    for(let j=1; j<p.trail.length; j++) {
-      const alpha = (j/p.trail.length) * (1-t) * 0.6;
+  function drawArcs() {
+    nodes.forEach(function(n) {
+      var mid = {
+        x: (n.x + brasilPt.x)/2,
+        y: Math.min(n.y,brasilPt.y) - Math.abs(n.x-brasilPt.x)*0.16 - 18
+      };
+      var a = n.level==='high' ? 0.07 : n.level==='medium' ? 0.05 : 0.03;
       ctx.beginPath();
-      ctx.moveTo(p.trail[j-1].x, p.trail[j-1].y);
-      ctx.lineTo(p.trail[j].x, p.trail[j].y);
-      if(p.color==='#f04d4d') ctx.strokeStyle=`rgba(240,77,77,${alpha})`;
-      else if(p.color==='#f5c518') ctx.strokeStyle=`rgba(245,197,24,${alpha})`;
-      else ctx.strokeStyle=`rgba(79,145,255,${alpha})`;
-      ctx.lineWidth = 1.5;
+      ctx.moveTo(n.x, n.y);
+      ctx.quadraticCurveTo(mid.x, mid.y, brasilPt.x, brasilPt.y);
+      ctx.strokeStyle = rc(n.col, a);
+      ctx.lineWidth   = n.level==='high' ? 0.8 : 0.5;
       ctx.stroke();
+    });
+  }
+
+  function ease(t) { return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
+  function bez(t,p0,p1,p2) { return (1-t)*(1-t)*p0+2*(1-t)*t*p1+t*t*p2; }
+
+  function launch(n) {
+    var mid = {
+      x: (n.x+brasilPt.x)/2 + (Math.random()-0.5)*55,
+      y: Math.min(n.y,brasilPt.y) - Math.abs(n.x-brasilPt.x)*0.16 - 15 + (Math.random()-0.5)*25
+    };
+    packets.push({
+      sx:n.x, sy:n.y, dx:brasilPt.x, dy:brasilPt.y,
+      cx:mid.x, cy:mid.y, col:n.col,
+      start:performance.now(), dur:1400+Math.random()*900, trail:[]
+    });
+  }
+
+  function sched(n) {
+    function fire() {
+      launch(n);
+      var d = n.level==='high' ? 240+Math.random()*240
+            : n.level==='medium' ? 480+Math.random()*320
+            : 750+Math.random()*450;
+      setTimeout(fire, d);
     }
-
-    // Partícula
-    const alpha2 = t<0.85 ? 1 : 1-(t-0.85)/0.15;
-    ctx.beginPath();
-    ctx.arc(px, py, 2.5, 0, Math.PI*2);
-    ctx.fillStyle = p.color;
-    ctx.globalAlpha = alpha2;
-    ctx.shadowColor = p.color;
-    ctx.shadowBlur  = 6;
-    ctx.fill();
-    ctx.globalAlpha = 1;
-    ctx.shadowBlur  = 0;
+    setTimeout(fire, Math.random()*1600);
   }
-}
 
-// Loop principal
-function loop(now) {
-  const ctx = animCanvas.getContext('2d');
-  ctx.clearRect(0,0,W,H);
-  drawArcs(ctx);
-  drawPackets(ctx, now);
-  drawNodes(ctx, now);
+  function drawPackets(now) {
+    for (var i=packets.length-1; i>=0; i--) {
+      var p=packets[i];
+      var t=Math.min((now-p.start)/p.dur,1);
+      if (t>=1) { packets.splice(i,1); continue; }
+      var et=ease(t);
+      var px=bez(et,p.sx,p.cx,p.dx), py=bez(et,p.sy,p.cy,p.dy);
+      p.trail.push({x:px,y:py});
+      if (p.trail.length>14) p.trail.shift();
+      for (var j=1;j<p.trail.length;j++) {
+        var a=(j/p.trail.length)*(1-t)*0.5;
+        ctx.beginPath();
+        ctx.moveTo(p.trail[j-1].x, p.trail[j-1].y);
+        ctx.lineTo(p.trail[j].x,   p.trail[j].y);
+        ctx.strokeStyle=rc(p.col,a);
+        ctx.lineWidth=1.3;
+        ctx.stroke();
+      }
+      var fa=t<0.88?1:1-(t-0.88)/0.12;
+      ctx.globalAlpha=fa;
+      ctx.shadowColor=rc(p.col,1); ctx.shadowBlur=7;
+      ctx.beginPath(); ctx.arc(px,py,2.3,0,Math.PI*2);
+      ctx.fillStyle=rc(p.col,1); ctx.fill();
+      ctx.shadowBlur=0; ctx.globalAlpha=1;
+    }
+  }
+
+  function drawNodes(now) {
+    var fs=Math.max(9,W*0.011);
+    nodes.forEach(function(n) {
+      var ph=phases[n.name]||0;
+      var p=(Math.sin(now/850+ph)*0.5+0.5);
+      var br=n.level==='high'?5.5:n.level==='medium'?4:3;
+      ctx.beginPath(); ctx.arc(n.x,n.y,br+4+p*7,0,Math.PI*2);
+      ctx.fillStyle=rc(n.col,0.04+p*0.07); ctx.fill();
+      ctx.beginPath(); ctx.arc(n.x,n.y,br+1.5,0,Math.PI*2);
+      ctx.fillStyle=rc(n.col,0.14); ctx.fill();
+      ctx.shadowColor=rc(n.col,0.9); ctx.shadowBlur=10;
+      ctx.beginPath(); ctx.arc(n.x,n.y,br,0,Math.PI*2);
+      ctx.fillStyle=rc(n.col,1); ctx.fill();
+      ctx.shadowBlur=0;
+      if (n.level==='high'&&W>500) {
+        ctx.fillStyle=rc(n.col,0.82);
+        ctx.font='bold '+fs+'px sans-serif';
+        ctx.textAlign='center';
+        ctx.fillText(n.name,n.x,n.y-br-5);
+      }
+    });
+    // Brasil
+    var gBr={r:34,g:214,b:122};
+    var pb=(Math.sin(now/600)*0.5+0.5);
+    ctx.beginPath(); ctx.arc(brasilPt.x,brasilPt.y,14+pb*10,0,Math.PI*2);
+    ctx.fillStyle=rc(gBr,0.05+pb*0.06); ctx.fill();
+    ctx.beginPath(); ctx.arc(brasilPt.x,brasilPt.y,8,0,Math.PI*2);
+    ctx.fillStyle=rc(gBr,0.2); ctx.fill();
+    ctx.shadowColor='rgba(34,214,122,0.9)'; ctx.shadowBlur=14;
+    ctx.beginPath(); ctx.arc(brasilPt.x,brasilPt.y,5,0,Math.PI*2);
+    ctx.fillStyle='#22d67a'; ctx.fill();
+    ctx.shadowBlur=0;
+    ctx.fillStyle='#22d67a';
+    ctx.font='bold '+Math.max(10,W*0.012)+'px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('BRASIL',brasilPt.x,brasilPt.y-14);
+  }
+
+  function loop(now) {
+    ctx.clearRect(0,0,W,H);
+    drawBg();
+    drawArcs();
+    drawPackets(now);
+    drawNodes(now);
+    requestAnimationFrame(loop);
+  }
+
+  setup();
+  nodes.forEach(sched);
   requestAnimationFrame(loop);
-}
-requestAnimationFrame(loop);
 
-// ── Tooltip hover ──────────────────────────────
-animCanvas.addEventListener('mousemove', e => {
-  const rect = animCanvas.getBoundingClientRect();
-  const mx = (e.clientX - rect.left) * (W / rect.width);
-  const my = (e.clientY - rect.top)  * (H / rect.height);
-  let found = null;
-  for(const a of atacantes) {
-    const d = Math.hypot(mx-a.x, my-a.y);
-    if(d < 14) { found = a; break; }
-  }
-  if(found) {
-    tip.textContent = `${found.name} — ${found.count.toLocaleString('pt-BR')} alertas`;
-    tip.style.display = 'block';
-    const rx = (found.x / W * 100);
-    const ry = (found.y / H * 100);
-    tip.style.left  = (e.clientX - rect.left + 14) + 'px';
-    tip.style.top   = (e.clientY - rect.top  - 10) + 'px';
-  } else {
-    tip.style.display = 'none';
-  }
-});
-animCanvas.addEventListener('mouseleave', () => { tip.style.display='none'; });
+  // Tooltip
+  canvas.addEventListener('mousemove', function(e) {
+    var rect=canvas.getBoundingClientRect();
+    var mx=(e.clientX-rect.left)*(W/rect.width);
+    var my=(e.clientY-rect.top)*(H/rect.height);
+    var found=null;
+    for (var i=0;i<nodes.length;i++) {
+      if (Math.hypot(mx-nodes[i].x,my-nodes[i].y)<16) { found=nodes[i]; break; }
+    }
+    if (found) {
+      tip.textContent=found.name+' \u2014 '+found.count.toLocaleString('pt-BR')+' alertas';
+      tip.style.display='block';
+      var cr=cont.getBoundingClientRect();
+      tip.style.left=(e.clientX-cr.left+14)+'px';
+      tip.style.top=(e.clientY-cr.top-10)+'px';
+    } else { tip.style.display='none'; }
+  });
+  canvas.addEventListener('mouseleave',function(){tip.style.display='none';});
 
-// ── Resize responsivo ──────────────────────────
-let resizeTimer;
-window.addEventListener('resize', () => {
-  clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(() => {
-    ({W, H} = resize());
-    drawBase(W, H);
-    atacantes = ATTACKS.map(a => ({...a, ...screenPt(a.lat, a.lon)}));
-    brasilPt  = screenPt(BRASIL.lat, BRASIL.lon);
-    packets.length = 0;
-    atacantes.forEach(schedulePkt);
-  }, 200);
-});
-
+  var rt;
+  window.addEventListener('resize',function(){
+    clearTimeout(rt);
+    rt=setTimeout(function(){ setup(); packets.length=0; nodes.forEach(sched); },250);
+  });
 })();
+
+
 // ── Animação contadores ──
 function animCount(el,target,dur=1800){
   let start=null;
