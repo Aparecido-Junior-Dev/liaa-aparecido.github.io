@@ -329,6 +329,7 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
     <li><a href="#solucao">Solução</a></li>
     <li><a href="#resultados">Resultados</a></li>
     <li><a href="#evolucao">Evolução</a></li>
+    <li><a href="#caminhos">Caminhos</a></li>
     <li><a href="https://github.com/Aparecido-Junior-Dev/firewall-ia" target="_blank" class="nav-gh">GitHub ↗</a></li>
   </ul>
 </nav>
@@ -808,71 +809,166 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
 
 <hr class="divider">
 
+<hr class="divider">
+
 <!-- ══ EVOLUÇÃO ══ -->
 <section id="evolucao" class="fade-in">
-  <div class="sec-tag">05 · Evolução</div>
-  <h2>De ideia a pipeline em produção</h2>
+  <div class="sec-tag">06 · Evolução</div>
+  <h2>7 apresentações ao longo do semestre</h2>
+  <p class="sec-desc">De logs de servidor web até um pipeline de firewall em produção — com dois pivôs de tema no caminho.</p>
 
-  <div class="tl" style="margin-top:2rem">
+  <div class="tl">
     <div class="tl-item">
-      <div class="tl-dot" style="background:var(--cz)"></div>
-      <div class="tl-data">Agosto — Setembro 2026</div>
-      <h4>Início: problema real, primeiros dados</h4>
-      <p>Tema nasceu da necessidade de automatizar regras de firewall em uma rede de provedor real. Primeiras coletas de eve.json e filterlog do OPNsense.</p>
+      <div class="tl-dot" style="background:#8ba3c0"></div>
+      <div class="tl-data">08/09/2026 — Apresentação 1</div>
+      <h4>CIGA: extração de campos de comunicações internas</h4>
+      <p>Proposta de sistema para extrair campos de CIs em papel via OCR e LLM. <strong style="color:#f04d4d">Feedback:</strong> professor considerou OCR + regex suficiente, LLM seria "elefante branco". Pediu um problema em que a IA faça sentido de fato.</p>
     </div>
-
     <div class="tl-item">
-      <div class="tl-dot" style="background:var(--amar)"></div>
-      <div class="tl-data">Setembro — Outubro 2026</div>
-      <h4>V1 — correlação por tupla e janela temporal</h4>
-      <ul>
-        <li>Correlação Suricata × PF com janela de ±5 segundos</li>
-        <li>Análise dos 48.915 alertas — primeiro funil</li>
-        <li>Identificação do problema: alerta ≠ ameaça que passou</li>
-        <li>5 regras de bloqueio criadas via API REST (Realtek CVE-2021-35394)</li>
+      <div class="tl-dot" style="background:#f5c518"></div>
+      <div class="tl-data">15/09/2026 — 1ª mudança de tema</div>
+      <h4>IA para detectar anomalias em logs de servidores web</h4>
+      <p>Mudança para score de risco em logs de sistemas web de clientes (frigoríficos) expostos à internet, com comparação contra AbuseIPDB e CrowdSec. <strong style="color:#f5c518">Feedback:</strong> limitar o escopo aos logs do servidor web; começar com um mês de logs de um servidor.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#4f91ff"></div>
+      <div class="tl-data">22/09/2026 — Apresentação 3</div>
+      <h4>Montagem do laboratório físico</h4>
+      <p>Rack, firewall bare metal, Proxmox, Zabbix, placa de rede para IDS, patch panel. <strong style="color:#f5c518">Feedback:</strong> muito infraestrutura — pediu o desenho arquitetural mostrando onde entra a IA.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#4f91ff"></div>
+      <div class="tl-data">29/09/2026 — Apresentação 4</div>
+      <h4>Experimento: servidor Windows exposto em DMZ</h4>
+      <p>1,3 milhão de registros em ~20 horas, de 23.055 IPs únicos. Tentativas em Telnet, SSH, SNMP, 443. <strong style="color:#f5c518">Feedback:</strong> varredura ≠ ataque; falta tráfego benigno; IP não identifica cliente por NAT. Problema definido: filtrar os 23k IPs por listas negras e usar IA no que restar.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#f04d4d"></div>
+      <div class="tl-data">07/10/2026 — 2ª mudança de tema (atendimento)</div>
+      <h4>Geração de regras para o OPNsense — nasce o Faro</h4>
+      <p>Já filtrava IPs por listas negras e passava o restante à IA. Pediu autorização para produção. <strong style="color:#f04d4d">Feedback:</strong> produção é a última etapa — primeiro validar com tráfego benigno e malicioso, falsos positivos e acurácia. Escopo fechado: gerar regras para o OPNsense e mapear quais ataques ele bloqueia.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#22d67a"></div>
+      <div class="tl-data">13/10/2026 — Apresentação 6</div>
+      <h4>Filtragem por listas negras dos alertas do Suricata</h4>
+      <p>48.915 alertas → 6.700 IPs → 57 IPs após AbuseIPDB → ~1.400 alertas → assinaturas (Realtek SDK). Community ID une EVE e filterlog. <strong style="color:#f5c518">Feedback:</strong> respostas mais curtas; detalhar nomes e funcionamento das listas e das assinaturas.</p>
+    </div>
+    <div class="tl-item">
+      <div class="tl-dot" style="background:#22d67a;border:2px solid #e8f0fe"></div>
+      <div class="tl-data">20/10/2026 — Apresentação 7 (última)</div>
+      <h4>Faro: filtragem em camadas e seleção de candidatos por IA</h4>
+      <p>Três camadas: AbuseIPDB + Spamhaus DROP + assinaturas Suricata. Realtek CVE-2021-35394 detectado em 8 dos 56 IPs. IA semiautomática propõe bloqueio via API REST. Dashboard em tempo real. <strong style="color:#f5c518">Feedback:</strong> slides poluídos; pediu desenho arquitetural, fluxograma e especificação das regras da IA. <em>"É bem legal — agora é iterar e se aprofundar."</em></p>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ AVALIAÇÃO DO PROFESSOR ══ -->
+<section id="avaliacao" class="fade-in">
+  <div class="sec-tag">07 · Avaliação do professor</div>
+  <h2>O que o professor disse</h2>
+  <p class="sec-desc">Avaliação pública em <a href="https://unipampa4all.github.io/disciplinas/liaa/20262/projetos_html/aparecido-firewall.html" target="_blank">unipampa4all.github.io</a> · última atualização 20/10/2026</p>
+
+  <div class="grid-2" style="margin-top:1.5rem">
+    <div class="card" style="border-color:rgba(34,214,122,.3)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#16a34a)"></div>
+      <h3>Pontos fortes</h3>
+      <ul style="padding-left:1.2rem;font-size:.9rem;line-height:2.1;margin-top:.5rem">
+        <li>Muita dedicação — 7 apresentações, maior assiduidade da turma</li>
+        <li>Laboratório físico próprio e acesso a logs reais de produção</li>
+        <li>Protótipo funcional com dashboard e integração com API do firewall</li>
+        <li>Funil quantificado: 49k alertas → 56 IPs</li>
+        <li>Conhecimento prático de redes e operação</li>
       </ul>
     </div>
-
-    <div class="tl-item">
-      <div class="tl-dot" style="background:var(--azul)"></div>
-      <div class="tl-data">Outubro 2026</div>
-      <h4>V2 — Community ID + 3 trilhas + avaliação do professor</h4>
-      <ul>
-        <li>Community ID substitui a janela temporal — junção exata</li>
-        <li>Funil separado em 3 trilhas: interna, reputação, comportamento</li>
-        <li>Avaliação V2 do prof. Diego: pergunta de pesquisa + hipóteses H1-H5</li>
-        <li>Repositório criado no GitHub com 66 arquivos e release v1.0</li>
-        <li>Descoberta: CrowdSec já estava ativo no OPNsense (8.328 IPs)</li>
+    <div class="card" style="border-color:rgba(245,197,24,.3)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--amar),#92400e)"></div>
+      <h3>Pontos de atenção</h3>
+      <ul style="padding-left:1.2rem;font-size:.9rem;line-height:2.1;margin-top:.5rem">
+        <li>Foco excessivo em infraestrutura e argumentos comerciais</li>
+        <li>Tendência a apresentar experimentos novos em vez de aprofundar o combinado</li>
+        <li>Papel da IA pouco especificado — restrito a assinaturas conhecidas</li>
+        <li>Ausência de tráfego benigno e de métricas de falsos positivos</li>
+        <li>Slides poluídos e respostas longas</li>
       </ul>
     </div>
+  </div>
 
-    <div class="tl-item">
-      <div class="tl-dot" style="background:var(--verde)"></div>
-      <div class="tl-data">Novembro 2026</div>
-      <h4>Fases 1–3 — 31 dias de dados + split temporal + comparação</h4>
-      <ul>
-        <li>31 dias de filterlog: 10,6M fluxos PF processados remotamente via SSH</li>
-        <li>Split temporal: Período A (17 dias treino) × B (14 dias teste)</li>
-        <li>4 famílias avaliadas: IP individual, comportamento, CrowdSec, AbuseIPDB</li>
-        <li>Script de coleta diária de feeds (5 fontes, snapshot por dia)</li>
-        <li>195 IPs identificados que mudaram de status entre períodos</li>
-        <li>Site publicado em liaa-aparecido.github.io</li>
-      </ul>
+  <div class="grid-2" style="margin-top:1.2rem">
+    <div class="card" style="text-align:center;background:var(--card2)">
+      <h3 style="font-size:.9rem;color:var(--cz);margin-bottom:.8rem">Progresso</h3>
+      <div style="font-size:3rem;font-weight:900;color:var(--azul)">3/5</div>
+      <p style="font-size:.82rem;margin-top:.4rem">Evolução concreta, mas 2 mudanças de tema e tendência a trazer novidades em vez de aprofundar</p>
+    </div>
+    <div class="card" style="text-align:center;background:var(--card2)">
+      <h3 style="font-size:.9rem;color:var(--cz);margin-bottom:.8rem">Mérito</h3>
+      <div style="font-size:3rem;font-weight:900;color:var(--azul)">3/5</div>
+      <p style="font-size:.82rem;margin-top:.4rem">Problema real e relevante, mas IA atuando numa etapa pequena e sem métricas de efetividade</p>
+    </div>
+  </div>
+
+  <div class="card mt2" style="border-left:4px solid var(--verde);border-radius:4px 12px 12px 4px;margin-top:1.5rem">
+    <p style="font-size:1rem;font-style:italic;color:var(--branco);line-height:1.8">
+      "Aparecido, a sua energia é admirável: você montou um laboratório inteiro, expôs um servidor à internet para ver o que acontecia e já tem o Faro bloqueando IPs com um painel em tempo real. Poucos colegas chegaram tão perto de algo funcionando de verdade. O próximo passo, porém, não é colocar mais coisas, e sim provar o que você já tem."
+    </p>
+    <p style="font-size:.85rem;margin-top:.8rem;color:var(--cz)">— Prof. Diego Kreutz · avaliação pública · 20/10/2026</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- ══ CAMINHOS FUTUROS ══ -->
+<section id="caminhos" class="fade-in">
+  <div class="sec-tag">08 · Próximos passos</div>
+  <h2>6 caminhos sugeridos pelo professor</h2>
+  <p class="sec-desc">Definidos na avaliação pública de 20/10/2026 — o que faz sentido até o final da disciplina.</p>
+
+  <div class="grid-2" style="margin-top:1.5rem">
+
+    <div class="card" style="border-color:rgba(34,214,122,.4)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#16a34a)"></div>
+      <span class="badge" style="background:rgba(34,214,122,.12);color:var(--verde)">Caminho 1 · Prioritário</span>
+      <h3>Validação no testbed com tráfego misto</h3>
+      <p>Usar o testbed do laboratório para gerar tráfego benigno (navegação, picos legítimos) e malicioso (força bruta, varreduras, exploits) com rótulos. Medir falsos positivos e taxa de detecção com e sem a IA.</p>
     </div>
 
-    <div class="tl-item">
-      <div class="tl-dot" style="background:var(--amar);border:2px dashed var(--branco)"></div>
-      <div class="tl-data">Próximas semanas</div>
-      <h4>Fase 4 — Validação e relatório final</h4>
-      <ul>
-        <li>Investigar os 195 IPs que mudaram de status (resíduo real)</li>
-        <li>Rotular 100 fluxos manualmente — oráculo local</li>
-        <li>Medir contribuição exclusiva e latência entre feeds (H2)</li>
-        <li>Modo sombra no OPNsense para regras candidatas</li>
-        <li>Relatório final com ameaças à validade</li>
-        <li>Recomendações operacionais para o OPNsense</li>
-      </ul>
+    <div class="card" style="border-color:rgba(79,145,255,.4)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--azul),var(--azul2))"></div>
+      <span class="badge" style="background:rgba(79,145,255,.12);color:var(--azul)">Caminho 2 · Prioritário</span>
+      <h3>Comparar vários modelos na seleção de candidatos</h3>
+      <p>A arquitetura já permite trocar a IA. Comparar dois modelos online de provedores diferentes + um modelo local nos mesmos 56 IPs, medindo concordância com analista, custo e latência por decisão.</p>
     </div>
+
+    <div class="card" style="border-color:rgba(232,121,249,.4)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--rosa),#7c3aed)"></div>
+      <span class="badge" style="background:rgba(232,121,249,.12);color:var(--rosa)">Caminho 3 · Em andamento</span>
+      <h3>Regras comportamentais além das assinaturas</h3>
+      <p>Pedir à LLM que gere regras por padrão de comportamento (taxa, sequência de portas, horários) e não só por assinaturas. Testar contra variações do mesmo ataque para medir robustez a mutações.</p>
+    </div>
+
+    <div class="card" style="border-color:rgba(245,197,24,.4)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--amar),#92400e)"></div>
+      <span class="badge" style="background:rgba(245,197,24,.12);color:var(--amar)">Caminho 4</span>
+      <h3>Mapa OPNsense × ModSecurity</h3>
+      <p>Tabela dos ataques observados nos logs de produção indicando quais o OPNsense bloqueia com as regras geradas e quais exigem firewall de aplicação (ModSecurity). Entrega final proposta pelo professor.</p>
+    </div>
+
+    <div class="card" style="border-color:rgba(139,163,192,.3)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--cz),#334155)"></div>
+      <span class="badge" style="background:rgba(139,163,192,.1);color:var(--cz)">Caminho 5</span>
+      <h3>Colaboração com projeto ModSecurity</h3>
+      <p>O professor citou um mestrando com pipeline para melhorar regras do ModSecurity. Conversar pode render base de ataques, métricas e scripts reaproveitáveis para a parte de aplicação web.</p>
+    </div>
+
+    <div class="card" style="border-color:rgba(34,214,122,.3)">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#065f46)"></div>
+      <span class="badge" style="background:rgba(34,214,122,.1);color:var(--verde)">Caminho 6</span>
+      <h3>Publicação como estudo de caso</h3>
+      <p>1,3M registros, 23k IPs, funil para 56 IPs + avaliação da IA = artigo para SBSeg (WTICG ou salão de ferramentas) ou WGRS do SBRC. Com métricas, a conversa sobre produto ganha base sólida.</p>
+    </div>
+
   </div>
 </section>
 
@@ -880,55 +976,53 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
 
 <!-- ══ ENTREGÁVEIS ══ -->
 <section class="fade-in">
-  <div class="sec-tag">06 · Entregáveis</div>
+  <div class="sec-tag">09 · Entregáveis</div>
   <h2>Status da entrega</h2>
   <div class="entreg-grid">
     <div class="entreg">
       <span class="ei">📦</span>
-      <div>
-        <h4>Pipeline reproduzível</h4>
-        <p><span class="ok">✅ Concluído</span> — repositório com scripts, ficha do dataset, 140 testes, release v1.0</p>
-      </div>
+      <div><h4>Pipeline reproduzível</h4>
+      <p><span class="ok">✅ Concluído</span> — repositório GitHub com 66 arquivos, 140 testes, release v1.0</p></div>
     </div>
     <div class="entreg">
       <span class="ei">🔽</span>
-      <div>
-        <h4>Funil com 3 trilhas</h4>
-        <p><span class="ok">✅ Concluído</span> — interna (6.495), reputação (1.377) e comportamento (20) documentadas</p>
-      </div>
+      <div><h4>Funil com 3 trilhas</h4>
+      <p><span class="ok">✅ Concluído</span> — interna (6.495), reputação (1.377), comportamento (20)</p></div>
     </div>
     <div class="entreg">
       <span class="ei">⚖️</span>
-      <div>
-        <h4>Comparação com CrowdSec</h4>
-        <p><span class="ok">✅ Concluído</span> — 4 famílias avaliadas em 31 dias com split temporal</p>
-      </div>
+      <div><h4>Comparação com CrowdSec</h4>
+      <p><span class="ok">✅ Concluído</span> — 4 famílias avaliadas em 31 dias com split temporal</p></div>
+    </div>
+    <div class="entreg">
+      <span class="ei">🏗️</span>
+      <div><h4>Desenho arquitetural (C4)</h4>
+      <p><span class="ok">✅ Publicado</span> — C4 nível 1 e nível 2 no site do professor</p></div>
     </div>
     <div class="entreg">
       <span class="ei">🌐</span>
-      <div>
-        <h4>Site do projeto</h4>
-        <p><span class="ok">✅ Concluído</span> — liaa-aparecido.github.io</p>
-      </div>
+      <div><h4>Site do projeto</h4>
+      <p><span class="ok">✅ Concluído</span> — aparecido-junior-dev.github.io/liaa-aparecido.github.io</p></div>
     </div>
     <div class="entreg">
-      <span class="ei">📚</span>
-      <div>
-        <h4>Trabalhos relacionados</h4>
-        <p><span class="pend">⚠️ Em andamento</span> — seção baseada nas referências do prof. Diego</p>
-      </div>
+      <span class="ei">🧪</span>
+      <div><h4>Validação com tráfego benigno</h4>
+      <p><span class="pend">⚠️ Pendente</span> — testbed do laboratório (caminho 1)</p></div>
     </div>
     <div class="entreg">
-      <span class="ei">🛠️</span>
-      <div>
-        <h4>Recomendações operacionais</h4>
-        <p><span class="pend">⚠️ Em andamento</span> — feeds a adotar, ajustes de assinatura, regras com validade</p>
-      </div>
+      <span class="ei">📐</span>
+      <div><h4>Especificação das regras da IA</h4>
+      <p><span class="pend">⚠️ Pendente</span> — prompt, critérios, instruções (caminho 3)</p></div>
+    </div>
+    <div class="entreg">
+      <span class="ei">📊</span>
+      <div><h4>Mapa OPNsense × ModSecurity</h4>
+      <p><span class="pend">⚠️ Pendente</span> — entrega final proposta pelo professor (caminho 4)</p></div>
     </div>
   </div>
 </section>
 
-<!-- ══ RODAPÉ ══ -->
+
 <footer>
   <p><strong>Aparecido de Souza Vieira Junior</strong> · Mestrado 2026 · UNIPAMPA · Disciplina LIAA · Prof. Diego Kreutz</p>
   <div class="footer-links">
