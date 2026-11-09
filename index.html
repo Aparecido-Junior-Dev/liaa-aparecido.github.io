@@ -895,170 +895,228 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
 </footer>
 
 <script>
-// ── Partículas de fundo ──
-(function(){
-  const c=document.getElementById('particles');
-  const cols=['#4f91ff','#22d67a','#f5c518','#e879f9','#f04d4d'];
-  for(let i=0;i<30;i++){
-    const d=document.createElement('div');
-    d.className='p';
-    const s=Math.random()*6+3;
-    d.style.cssText=`
-      width:${s}px;height:${s}px;
-      left:${Math.random()*100}%;
-      background:${cols[Math.floor(Math.random()*cols.length)]};
-      animation-duration:${Math.random()*20+15}s;
-      animation-delay:-${Math.random()*20}s;
-    `;
+/* ══════════════════════════════════════════════
+   1. PARTÍCULAS DE FUNDO
+══════════════════════════════════════════════ */
+(function() {
+  var c = document.getElementById('particles');
+  if (!c) return;
+  var cols = ['#4f91ff','#22d67a','#f5c518','#e879f9','#f04d4d'];
+  for (var i = 0; i < 35; i++) {
+    var d = document.createElement('div');
+    d.className = 'p';
+    var s = Math.random() * 6 + 3;
+    d.style.width    = s + 'px';
+    d.style.height   = s + 'px';
+    d.style.left     = (Math.random() * 100) + '%';
+    d.style.background = cols[Math.floor(Math.random() * cols.length)];
+    d.style.animationDuration = (Math.random() * 20 + 15) + 's';
+    d.style.animationDelay   = '-' + (Math.random() * 20) + 's';
     c.appendChild(d);
   }
 })();
 
-// ── Fade-in ao rolar ──
-const obs=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
-},{threshold:.12});
-document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
+/* ══════════════════════════════════════════════
+   2. FADE-IN AO ROLAR
+══════════════════════════════════════════════ */
+var obs = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.fade-in').forEach(function(el) { obs.observe(el); });
 
-// ══════════════════════════════════════════════
-// ══════════════════════════════════════
-// MAPA MUNDI — Canvas puro, sem CDN externo
-// ══════════════════════════════════════
-(function initMap() {
+/* ══════════════════════════════════════════════
+   3. MAPA DE ATAQUES — Canvas puro, SVG base
+══════════════════════════════════════════════ */
+(function() {
   var cont   = document.getElementById('map-container');
   var canvas = document.getElementById('map-canvas');
   var tip    = document.getElementById('map-tip');
   if (!cont || !canvas) return;
   var ctx = canvas.getContext('2d');
 
-  function merc(lat, lon, W, H) {
-    var x = ((lon + 180) / 360) * W;
-    var r = lat * Math.PI / 180;
-    var n = Math.log(Math.tan(Math.PI / 4 + r / 2));
-    var y = (H / 2) - (H * n / (2 * Math.PI));
+  // Projeção Miller (melhor que Mercator puro para mapas-múndi)
+  function proj(lat, lon, W, H) {
+    var pad = 0.05;
+    var x = ((lon + 180) / 360) * W * (1 - pad*2) + W * pad;
+    // Miller cylindrical
+    var latR  = lat * Math.PI / 180;
+    var millerY = 1.25 * Math.log(Math.tan(Math.PI/4 + 0.4 * latR));
+    // Miller range: aprox -2.303 a +2.303
+    var maxY = 2.303;
+    var y = (H / 2) - (H * millerY / (2 * maxY * 1.1));
     return { x: x, y: y };
   }
 
+  // ── Países (lat/lon) ────────────────────────
   var PAISES = [
-    { name: 'Franca',        lat: 46.2,  lon:   2.2, count: 10271, level: 'high'   },
-    { name: 'EUA',           lat: 37.1,  lon: -95.7, count:  6380, level: 'high'   },
-    { name: 'Suica',         lat: 46.8,  lon:   8.2, count:  2289, level: 'high'   },
-    { name: 'Holanda',       lat: 52.1,  lon:   5.3, count:  1338, level: 'high'   },
-    { name: 'Bulgaria',      lat: 42.7,  lon:  25.5, count:  1069, level: 'high'   },
-    { name: 'Alemanha',      lat: 51.2,  lon:  10.5, count:  1270, level: 'high'   },
-    { name: 'China',         lat: 35.9,  lon: 104.2, count:  1282, level: 'high'   },
-    { name: 'Russia',        lat: 61.5,  lon:  90.0, count:   818, level: 'medium' },
-    { name: 'Reino Unido',   lat: 55.4,  lon:  -3.4, count:  1115, level: 'high'   },
-    { name: 'Singapura',     lat:  1.3,  lon: 103.8, count:   831, level: 'medium' },
-    { name: 'India',         lat: 20.6,  lon:  78.9, count:   380, level: 'medium' },
-    { name: 'Japao',         lat: 36.2,  lon: 138.3, count:   290, level: 'medium' },
-    { name: 'Coreia do Sul', lat: 35.9,  lon: 127.8, count:   185, level: 'low'    },
-    { name: 'Hong Kong',     lat: 22.3,  lon: 114.2, count:   452, level: 'medium' },
-    { name: 'Turquia',       lat: 38.9,  lon:  35.2, count:   265, level: 'low'    },
-    { name: 'Ucrania',       lat: 48.4,  lon:  31.2, count:   198, level: 'low'    },
-    { name: 'Ira',           lat: 32.4,  lon:  53.7, count:   162, level: 'low'    },
-    { name: 'Italia',        lat: 41.9,  lon:  12.6, count:   320, level: 'medium' },
-    { name: 'Espanha',       lat: 40.5,  lon:  -3.7, count:   280, level: 'medium' },
-    { name: 'Romania',       lat: 45.9,  lon:  24.9, count:   240, level: 'low'    },
+    { n:'França',        la:46.2,  lo:2.2,    c:10271, lv:'high'   },
+    { n:'EUA',           la:37.1,  lo:-95.7,  c:6380,  lv:'high'   },
+    { n:'Suíça',         la:46.8,  lo:8.2,    c:2289,  lv:'high'   },
+    { n:'Holanda',       la:52.1,  lo:5.3,    c:1338,  lv:'high'   },
+    { n:'Bulgária',      la:42.7,  lo:25.5,   c:1069,  lv:'high'   },
+    { n:'Alemanha',      la:51.2,  lo:10.5,   c:1270,  lv:'high'   },
+    { n:'China',         la:35.9,  lo:104.2,  c:1282,  lv:'high'   },
+    { n:'Rússia',        la:61.5,  lo:90.0,   c:818,   lv:'medium' },
+    { n:'Reino Unido',   la:55.4,  lo:-3.4,   c:1115,  lv:'high'   },
+    { n:'Singapura',     la:1.3,   lo:103.8,  c:831,   lv:'medium' },
+    { n:'Índia',         la:20.6,  lo:78.9,   c:380,   lv:'medium' },
+    { n:'Japão',         la:36.2,  lo:138.3,  c:290,   lv:'medium' },
+    { n:'Coreia do Sul', la:35.9,  lo:127.8,  c:185,   lv:'low'    },
+    { n:'Hong Kong',     la:22.3,  lo:114.2,  c:452,   lv:'medium' },
+    { n:'Turquia',       la:38.9,  lo:35.2,   c:265,   lv:'low'    },
+    { n:'Ucrânia',       la:48.4,  lo:31.2,   c:198,   lv:'low'    },
+    { n:'Irã',           la:32.4,  lo:53.7,   c:162,   lv:'low'    },
+    { n:'Itália',        la:41.9,  lo:12.6,   c:320,   lv:'medium' },
+    { n:'Espanha',       la:40.5,  lo:-3.7,   c:280,   lv:'medium' },
+    { n:'Romênia',       la:45.9,  lo:24.9,   c:240,   lv:'low'    },
   ];
-  var BRASIL_LAT = -14.2, BRASIL_LON = -51.9;
+  var BRA = { la: -14.2, lo: -51.9 };
 
-  // Continentes como polilinha lat/lon
-  var LAND = [
-    // America do Norte
-    [[-168,71],[-95,73],[-55,68],[-55,50],[-64,44],[-66,34],[-80,25],[-88,16],[-92,20],[-98,23],[-110,25],[-120,35],[-125,49],[-140,60],[-168,60]],
-    // America Central
-    [[-92,18],[-83,10],[-77,7],[-75,11],[-83,10],[-88,16],[-92,18]],
-    // America do Sul
-    [[-82,12],[-62,11],[-34,5],[-35,-5],[-38,-20],[-40,-22],[-44,-23],[-53,-34],[-58,-38],[-65,-44],[-66,-54],[-72,-50],[-75,-45],[-72,-40],[-70,-18],[-75,-10],[-80,5],[-82,12]],
-    // Europa Ocidental
-    [[-10,36],[-8,44],[2,49],[8,49],[16,49],[22,42],[28,42],[32,48],[32,55],[22,57],[15,58],[10,55],[5,58],[-5,55],[-10,52],[-9,40],[-6,37],[5,36],[16,38],[22,38],[18,40],[-10,36]],
-    // Escandinavia
-    [[5,57],[8,58],[16,57],[20,60],[26,65],[22,72],[14,66],[8,58],[5,57]],
-    // Russia e Asia Norte
-    [[28,55],[40,72],[80,73],[140,72],[170,65],[160,52],[132,43],[110,43],[90,42],[70,44],[50,43],[40,45],[36,50],[28,55]],
-    // Oriente Medio
-    [[36,28],[44,28],[55,24],[58,22],[50,24],[58,28],[52,30],[46,32],[36,35],[34,30],[36,28]],
-    // Africa
-    [[-18,15],[-8,36],[8,38],[26,34],[34,28],[42,12],[44,2],[40,-10],[36,-20],[28,-34],[12,-28],[8,-4],[4,8],[-8,2],[-16,8],[-18,15]],
-    // India
-    [[66,24],[72,22],[80,8],[80,12],[78,22],[80,28],[76,36],[68,36],[64,30],[66,24]],
-    // China
-    [[80,30],[90,30],[100,20],[104,10],[108,16],[106,22],[120,26],[122,32],[130,42],[136,44],[130,43],[122,40],[116,38],[106,30],[100,26],[90,28],[80,30]],
-    // Japao
-    [[130,30],[135,35],[141,40],[141,43],[130,43],[130,30]],
-    // Sudeste Asiatico
-    [[100,20],[104,10],[100,2],[103,1],[105,10],[108,16],[100,20]],
-    // Australia
-    [[114,-22],[126,-14],[136,-12],[140,-18],[148,-18],[150,-22],[152,-28],[150,-38],[140,-36],[130,-32],[116,-32],[114,-22]],
-    // Groelandia
-    [[-52,60],[-20,64],[-20,76],[-40,84],[-60,66],[-52,60]],
-  ];
-
-  function lc(level) {
-    if (level === 'high')   return {r:240, g:77,  b:77 };
-    if (level === 'medium') return {r:245, g:197, b:24 };
-    return                         {r:79,  g:145, b:255};
+  function lc(lv) {
+    if (lv==='high')   return { r:240, g:77,  b:77  };
+    if (lv==='medium') return { r:245, g:197, b:24  };
+    return                    { r:79,  g:145, b:255 };
   }
-  function rc(c, a) { return 'rgba('+c.r+','+c.g+','+c.b+','+a+')'; }
+  function rgba(c, a) { return 'rgba('+c.r+','+c.g+','+c.b+','+a+')'; }
 
-  var W, H, nodes, brasilPt, packets = [], phases = {};
+  // ── Polígonos dos países (Natural Earth simplificado) ──
+  // Cada entrada: array de [lon, lat]
+  // Fonte: Natural Earth 110m, simplificado manualmente para polígono legível
+  var COUNTRIES = [
+    // Canadá + Alaska
+    { fill:'#1a3a5a', poly:[[-95,49],[-76,44],[-67,47],[-60,46],[-53,47],[-56,52],[-64,63],[-68,68],[-72,74],[-83,80],[-95,80],[-110,78],[-130,72],[-141,60],[-165,60],[-168,55],[-141,55],[-130,50],[-120,49],[-110,49],[-95,49]] },
+    // Estados Unidos (sem Alaska)
+    { fill:'#1e4070', poly:[[-67,47],[-76,44],[-82,42],[-83,42],[-87,42],[-90,42],[-95,49],[-110,49],[-120,49],[-124,49],[-124,38],[-121,34],[-117,33],[-114,32],[-111,31],[-106,31],[-103,29],[-97,26],[-94,30],[-90,29],[-85,30],[-82,30],[-80,25],[-80,32],[-75,35],[-75,38],[-72,41],[-67,47]] },
+    // México
+    { fill:'#1a3a5a', poly:[[-118,32],[-111,31],[-106,31],[-103,29],[-97,26],[-91,18],[-88,16],[-85,16],[-83,10],[-84,11],[-87,16],[-91,18],[-94,22],[-97,22],[-98,23],[-105,23],[-110,24],[-115,28],[-118,32]] },
+    // América Central
+    { fill:'#162c44', poly:[[-88,16],[-83,10],[-77,8],[-75,9],[-77,8],[-83,10],[-85,11],[-83,10],[-88,16]] },
+    // Venezuela/Colômbia/Guiana
+    { fill:'#1a3a5a', poly:[[-73,12],[-62,11],[-60,5],[-53,4],[-50,2],[-52,4],[-60,6],[-62,11],[-66,11],[-72,12],[-73,12]] },
+    // Brasil
+    { fill:'#1e4070', poly:[[-72,5],[-60,5],[-50,2],[-34,5],[-35,-4],[-37,-12],[-38,-20],[-40,-22],[-44,-23],[-50,-29],[-53,-34],[-57,-38],[-58,-35],[-57,-30],[-53,-34],[-49,-28],[-48,-16],[-52,-10],[-60,-5],[-72,-5],[-72,5]] },
+    // Argentina/Chile
+    { fill:'#1a3a5a', poly:[[-70,-18],[-65,-22],[-57,-22],[-53,-34],[-58,-38],[-65,-44],[-66,-55],[-68,-55],[-72,-50],[-75,-45],[-72,-40],[-70,-30],[-70,-18]] },
+    // Islândia
+    { fill:'#1a3a5a', poly:[[-24,63],[-14,63],[-13,66],[-22,66],[-24,64],[-24,63]] },
+    // Reino Unido + Irlanda
+    { fill:'#1e4070', poly:[[-8,55],[-6,50],[-2,50],[2,51],[0,54],[-3,56],[-6,58],[-7,58],[-8,55]] },
+    // França
+    { fill:'#22477a', poly:[[-5,44],[0,44],[2,44],[8,44],[8,48],[6,49],[2,51],[-2,50],[-5,48],[-5,44]] },
+    // Espanha + Portugal
+    { fill:'#1e4070', poly:[[-9,44],[-8,42],[-7,38],[-5,36],[0,36],[3,40],[3,43],[0,44],[-5,44],[-9,44]] },
+    // Itália
+    { fill:'#1a3a5a', poly:[[7,44],[10,44],[14,41],[16,38],[15,38],[12,38],[10,44],[7,44]] },
+    // Alemanha + Países Baixos + Bélgica
+    { fill:'#1e4070', poly:[[6,51],[8,48],[10,48],[14,48],[14,54],[8,55],[6,51]] },
+    // Polônia + República Tcheca + Eslováquia
+    { fill:'#1a3a5a', poly:[[14,54],[14,48],[18,48],[22,48],[24,50],[22,54],[14,54]] },
+    // Suécia + Noruega + Finlândia + Dinamarca
+    { fill:'#1e4070', poly:[[5,57],[8,58],[12,58],[16,57],[20,60],[24,64],[26,70],[20,72],[14,67],[10,57],[8,58],[5,57]] },
+    // Ucrânia + Moldova + Romênia + Bulgária
+    { fill:'#1a3a5a', poly:[[22,48],[26,48],[30,46],[34,46],[36,50],[32,52],[28,54],[24,50],[22,48]] },
+    // Turquia
+    { fill:'#1a3a5a', poly:[[26,42],[30,42],[36,37],[42,38],[44,38],[42,40],[36,42],[30,44],[26,42]] },
+    // Rússia (Europa + Ásia Ocidental)
+    { fill:'#1a3c62', poly:[[22,54],[28,54],[34,56],[38,56],[44,52],[50,47],[60,56],[70,64],[80,68],[90,72],[100,72],[120,72],[140,68],[150,58],[155,50],[140,48],[132,42],[120,42],[100,42],[88,48],[80,52],[70,54],[56,58],[44,56],[36,58],[28,56],[22,54]] },
+    // Cazaquistão + Ásia Central
+    { fill:'#162c44', poly:[[50,42],[60,42],[70,42],[80,42],[88,48],[80,52],[70,54],[56,58],[50,50],[44,52],[50,42]] },
+    // Irã
+    { fill:'#1a3a5a', poly:[[44,38],[50,37],[56,26],[58,22],[50,24],[44,28],[44,38]] },
+    // Arábia + Oriente Médio
+    { fill:'#162c44', poly:[[36,22],[42,17],[50,12],[56,12],[58,22],[56,26],[50,28],[44,28],[44,24],[38,22],[36,22]] },
+    // Índia
+    { fill:'#1e4070', poly:[[66,24],[72,22],[80,10],[78,8],[76,14],[80,20],[78,28],[72,34],[68,28],[64,24],[66,24]] },
+    // China
+    { fill:'#1a3c62', poly:[[80,42],[88,48],[100,42],[104,22],[110,18],[114,22],[120,26],[122,32],[126,38],[120,42],[100,42],[88,48],[80,52],[72,40],[68,38],[78,36],[80,32],[80,28],[78,28],[80,42]] },
+    // Japão
+    { fill:'#1e4070', poly:[[130,32],[132,34],[134,36],[136,36],[138,38],[140,40],[142,44],[140,44],[136,40],[132,36],[130,34],[130,32]] },
+    // Coreia
+    { fill:'#1a3a5a', poly:[[126,34],[128,36],[130,38],[128,40],[126,38],[124,36],[126,34]] },
+    // Sudeste Asiático
+    { fill:'#162c44', poly:[[100,22],[104,10],[102,2],[104,2],[106,4],[108,2],[110,2],[116,2],[118,4],[108,8],[106,14],[108,18],[106,22],[100,22]] },
+    // Indonésia (ilhas simplificadas)
+    { fill:'#1a3a5a', poly:[[96,-5],[102,-4],[106,-6],[108,-7],[106,-8],[100,-6],[96,-5]] },
+    { fill:'#1a3a5a', poly:[[110,-6],[114,-8],[118,-8],[124,-8],[128,-4],[120,-4],[110,-6]] },
+    // Austrália
+    { fill:'#1e4070', poly:[[114,-22],[122,-18],[130,-12],[136,-12],[140,-18],[142,-12],[148,-18],[150,-24],[152,-28],[150,-38],[144,-38],[138,-36],[132,-32],[116,-32],[114,-22]] },
+    // Groenlândia
+    { fill:'#162c44', poly:[[-52,60],[-20,64],[-18,70],[-30,76],[-44,82],[-52,82],[-60,76],[-60,68],[-52,60]] },
+    // África do Norte
+    { fill:'#1e4070', poly:[[-17,28],[-5,36],[8,38],[12,34],[16,32],[24,30],[32,22],[36,22],[42,12],[50,12],[42,12],[36,12],[26,10],[8,4],[0,6],[-8,8],[-16,16],[-17,28]] },
+    // África Sub-Sahariana Ocidental
+    { fill:'#1a3a5a', poly:[[-16,16],[-8,8],[0,6],[8,4],[8,-2],[2,-4],[-4,-6],[-10,-4],[-14,6],[-16,16]] },
+    // África do Sul / Oriental
+    { fill:'#162c44', poly:[[26,8],[34,0],[40,-4],[42,-12],[36,-18],[32,-24],[26,-34],[18,-34],[12,-28],[10,-2],[16,4],[22,8],[26,8]] },
+    // Madagascar
+    { fill:'#1a3a5a', poly:[[44,-12],[48,-14],[50,-16],[50,-22],[44,-24],[43,-20],[44,-16],[44,-12]] },
+  ];
+
+  var W, H, nodes, brasilPt, packets = {}, phases = {};
+  var pktList = [];
 
   function setup() {
-    W = cont.clientWidth || 800;
-    H = Math.round(W * 0.52);
+    W = cont.clientWidth || 900;
+    H = Math.round(W * 0.5);
     canvas.width  = W;
     canvas.height = H;
     canvas.style.height = H + 'px';
     cont.style.minHeight = H + 'px';
     nodes = PAISES.map(function(p) {
-      var pt = merc(p.lat, p.lon, W, H);
-      return { name:p.name, count:p.count, level:p.level, x:pt.x, y:pt.y, col:lc(p.level) };
+      var pt = proj(p.la, p.lo, W, H);
+      return { n:p.n, c:p.c, lv:p.lv, x:pt.x, y:pt.y, col:lc(p.lv) };
     });
-    brasilPt = merc(BRASIL_LAT, BRASIL_LON, W, H);
+    brasilPt = proj(BRA.la, BRA.lo, W, H);
     nodes.forEach(function(n) {
-      if (!phases[n.name]) phases[n.name] = Math.random() * Math.PI * 2;
+      if (!phases[n.n]) phases[n.n] = Math.random() * Math.PI * 2;
     });
   }
 
-  function drawBg() {
-    var g = ctx.createLinearGradient(0,0,0,H);
-    g.addColorStop(0,   '#030a14');
-    g.addColorStop(0.5, '#060e1a');
-    g.addColorStop(1,   '#040c16');
+  // ── Desenhar mapa base ────────────────────────────────────────
+  function drawBase() {
+    // Oceano
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0,   '#030b17');
+    g.addColorStop(0.5, '#050e1c');
+    g.addColorStop(1,   '#030a14');
     ctx.fillStyle = g;
-    ctx.fillRect(0,0,W,H);
+    ctx.fillRect(0, 0, W, H);
 
-    // Grade
-    ctx.strokeStyle = 'rgba(79,145,255,0.05)';
-    ctx.lineWidth = 0.5;
-    for (var lon=-180; lon<=180; lon+=30) {
-      var px = merc(0,lon,W,H).x;
-      ctx.beginPath(); ctx.moveTo(px,0); ctx.lineTo(px,H); ctx.stroke();
-    }
-    for (var lat=-60; lat<=75; lat+=30) {
-      var py = merc(lat,0,W,H).y;
-      ctx.beginPath(); ctx.moveTo(0,py); ctx.lineTo(W,py); ctx.stroke();
-    }
+    // Grade sutil
+    ctx.strokeStyle = 'rgba(79,145,255,0.04)';
+    ctx.lineWidth   = 0.5;
+    var lons = [-150,-120,-90,-60,-30,0,30,60,90,120,150,180];
+    lons.forEach(function(lon) {
+      var x = proj(0, lon, W, H).x;
+      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+    });
+    var lats = [-60,-30,0,30,60];
+    lats.forEach(function(lat) {
+      var y = proj(lat, 0, W, H).y;
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+    });
+
     // Equador
-    ctx.strokeStyle = 'rgba(79,145,255,0.12)';
-    ctx.lineWidth = 0.8;
-    ctx.setLineDash([5,8]);
-    var ye = merc(0,0,W,H).y;
-    ctx.beginPath(); ctx.moveTo(0,ye); ctx.lineTo(W,ye); ctx.stroke();
+    ctx.strokeStyle = 'rgba(79,145,255,0.1)';
+    ctx.lineWidth   = 0.8;
+    ctx.setLineDash([6, 9]);
+    var ye = proj(0, 0, W, H).y;
+    ctx.beginPath(); ctx.moveTo(0, ye); ctx.lineTo(W, ye); ctx.stroke();
     ctx.setLineDash([]);
 
-    // Continentes
-    LAND.forEach(function(poly) {
+    // Países
+    COUNTRIES.forEach(function(country) {
       ctx.beginPath();
-      poly.forEach(function(pt,i) {
-        var p = merc(pt[1], pt[0], W, H);
-        if (i===0) ctx.moveTo(p.x, p.y);
+      country.poly.forEach(function(pt, i) {
+        var p = proj(pt[1], pt[0], W, H);
+        if (i === 0) ctx.moveTo(p.x, p.y);
         else ctx.lineTo(p.x, p.y);
       });
       ctx.closePath();
-      ctx.fillStyle   = 'rgba(26,48,88,0.88)';
-      ctx.strokeStyle = 'rgba(50,88,140,0.55)';
+      ctx.fillStyle   = country.fill;
+      ctx.strokeStyle = 'rgba(100,160,220,0.25)';
       ctx.lineWidth   = 0.6;
       ctx.fill();
       ctx.stroke();
@@ -1066,188 +1124,204 @@ document.querySelectorAll('.fade-in').forEach(el=>obs.observe(el));
 
     // Labels oceanos
     ctx.fillStyle = 'rgba(79,145,255,0.15)';
-    var fs = Math.max(9, W*0.011);
-    ctx.font = fs+'px sans-serif';
+    ctx.font = Math.max(9, W * 0.011) + 'px sans-serif';
     ctx.textAlign = 'center';
-    [['Pacifico',0,-145],['Atlantico',10,-28],['Indico',-18,74]].forEach(function(o) {
-      var p = merc(o[1],o[2],W,H);
+    [['Pacífico', 0, -140],['Atlântico', 15, -28],['Índico', -20, 74],['Mar Ártico', 76, 0]].forEach(function(o) {
+      var p = proj(o[1], o[2], W, H);
       ctx.fillText(o[0], p.x, p.y);
     });
   }
 
+  // ── Arcos estáticos ───────────────────────────────────────────
   function drawArcs() {
     nodes.forEach(function(n) {
-      var mid = {
-        x: (n.x + brasilPt.x)/2,
-        y: Math.min(n.y,brasilPt.y) - Math.abs(n.x-brasilPt.x)*0.16 - 18
-      };
-      var a = n.level==='high' ? 0.07 : n.level==='medium' ? 0.05 : 0.03;
+      var cx = (n.x + brasilPt.x) / 2;
+      var cy = Math.min(n.y, brasilPt.y) - Math.abs(n.x - brasilPt.x) * 0.15 - 15;
+      var a = n.lv==='high' ? 0.07 : n.lv==='medium' ? 0.05 : 0.03;
       ctx.beginPath();
       ctx.moveTo(n.x, n.y);
-      ctx.quadraticCurveTo(mid.x, mid.y, brasilPt.x, brasilPt.y);
-      ctx.strokeStyle = rc(n.col, a);
-      ctx.lineWidth   = n.level==='high' ? 0.8 : 0.5;
+      ctx.quadraticCurveTo(cx, cy, brasilPt.x, brasilPt.y);
+      ctx.strokeStyle = rgba(n.col, a);
+      ctx.lineWidth   = n.lv==='high' ? 0.8 : 0.5;
       ctx.stroke();
     });
   }
 
-  function ease(t) { return t<0.5 ? 2*t*t : -1+(4-2*t)*t; }
-  function bez(t,p0,p1,p2) { return (1-t)*(1-t)*p0+2*(1-t)*t*p1+t*t*p2; }
+  // ── Pacotes (partículas voando) ───────────────────────────────
+  function easeIO(t) { return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+  function bez(t, p0, p1, p2) { return (1-t)*(1-t)*p0 + 2*(1-t)*t*p1 + t*t*p2; }
 
   function launch(n) {
-    var mid = {
-      x: (n.x+brasilPt.x)/2 + (Math.random()-0.5)*55,
-      y: Math.min(n.y,brasilPt.y) - Math.abs(n.x-brasilPt.x)*0.16 - 15 + (Math.random()-0.5)*25
-    };
-    packets.push({
-      sx:n.x, sy:n.y, dx:brasilPt.x, dy:brasilPt.y,
-      cx:mid.x, cy:mid.y, col:n.col,
-      start:performance.now(), dur:1400+Math.random()*900, trail:[]
-    });
+    var cx = (n.x + brasilPt.x) / 2 + (Math.random()-0.5)*50;
+    var cy = Math.min(n.y, brasilPt.y) - Math.abs(n.x-brasilPt.x)*0.15 - 15 + (Math.random()-0.5)*20;
+    pktList.push({ sx:n.x, sy:n.y, dx:brasilPt.x, dy:brasilPt.y,
+                   cx:cx, cy:cy, col:n.col,
+                   start:performance.now(), dur:1400+Math.random()*900, trail:[] });
   }
 
   function sched(n) {
     function fire() {
       launch(n);
-      var d = n.level==='high' ? 240+Math.random()*240
-            : n.level==='medium' ? 480+Math.random()*320
-            : 750+Math.random()*450;
+      var d = n.lv==='high' ? 230+Math.random()*230
+            : n.lv==='medium' ? 460+Math.random()*300
+            : 720+Math.random()*420;
       setTimeout(fire, d);
     }
-    setTimeout(fire, Math.random()*1600);
+    setTimeout(fire, Math.random()*1500);
   }
 
-  function drawPackets(now) {
-    for (var i=packets.length-1; i>=0; i--) {
-      var p=packets[i];
-      var t=Math.min((now-p.start)/p.dur,1);
-      if (t>=1) { packets.splice(i,1); continue; }
-      var et=ease(t);
-      var px=bez(et,p.sx,p.cx,p.dx), py=bez(et,p.sy,p.cy,p.dy);
-      p.trail.push({x:px,y:py});
-      if (p.trail.length>14) p.trail.shift();
-      for (var j=1;j<p.trail.length;j++) {
-        var a=(j/p.trail.length)*(1-t)*0.5;
+  function drawPkts(now) {
+    for (var i = pktList.length-1; i >= 0; i--) {
+      var p = pktList[i];
+      var t = Math.min((now-p.start)/p.dur, 1);
+      if (t >= 1) { pktList.splice(i, 1); continue; }
+      var et = easeIO(t);
+      var px = bez(et, p.sx, p.cx, p.dx);
+      var py = bez(et, p.sy, p.cy, p.dy);
+      p.trail.push({ x:px, y:py });
+      if (p.trail.length > 14) p.trail.shift();
+      for (var j = 1; j < p.trail.length; j++) {
+        var a = (j/p.trail.length)*(1-t)*0.5;
         ctx.beginPath();
         ctx.moveTo(p.trail[j-1].x, p.trail[j-1].y);
         ctx.lineTo(p.trail[j].x,   p.trail[j].y);
-        ctx.strokeStyle=rc(p.col,a);
-        ctx.lineWidth=1.3;
+        ctx.strokeStyle = rgba(p.col, a);
+        ctx.lineWidth   = 1.4;
         ctx.stroke();
       }
-      var fa=t<0.88?1:1-(t-0.88)/0.12;
-      ctx.globalAlpha=fa;
-      ctx.shadowColor=rc(p.col,1); ctx.shadowBlur=7;
-      ctx.beginPath(); ctx.arc(px,py,2.3,0,Math.PI*2);
-      ctx.fillStyle=rc(p.col,1); ctx.fill();
-      ctx.shadowBlur=0; ctx.globalAlpha=1;
+      var fa = t < 0.88 ? 1 : 1-(t-0.88)/0.12;
+      ctx.globalAlpha = fa;
+      ctx.shadowColor = rgba(p.col, 1);
+      ctx.shadowBlur  = 7;
+      ctx.beginPath();
+      ctx.arc(px, py, 2.3, 0, Math.PI*2);
+      ctx.fillStyle = rgba(p.col, 1);
+      ctx.fill();
+      ctx.shadowBlur  = 0;
+      ctx.globalAlpha = 1;
     }
   }
 
+  // ── Nós (países e Brasil) ─────────────────────────────────────
   function drawNodes(now) {
-    var fs=Math.max(9,W*0.011);
+    var fs = Math.max(9, W*0.011);
     nodes.forEach(function(n) {
-      var ph=phases[n.name]||0;
-      var p=(Math.sin(now/850+ph)*0.5+0.5);
-      var br=n.level==='high'?5.5:n.level==='medium'?4:3;
-      ctx.beginPath(); ctx.arc(n.x,n.y,br+4+p*7,0,Math.PI*2);
-      ctx.fillStyle=rc(n.col,0.04+p*0.07); ctx.fill();
-      ctx.beginPath(); ctx.arc(n.x,n.y,br+1.5,0,Math.PI*2);
-      ctx.fillStyle=rc(n.col,0.14); ctx.fill();
-      ctx.shadowColor=rc(n.col,0.9); ctx.shadowBlur=10;
-      ctx.beginPath(); ctx.arc(n.x,n.y,br,0,Math.PI*2);
-      ctx.fillStyle=rc(n.col,1); ctx.fill();
-      ctx.shadowBlur=0;
-      if (n.level==='high'&&W>500) {
-        ctx.fillStyle=rc(n.col,0.82);
-        ctx.font='bold '+fs+'px sans-serif';
-        ctx.textAlign='center';
-        ctx.fillText(n.name,n.x,n.y-br-5);
+      var ph = phases[n.n] || 0;
+      var p  = (Math.sin(now/850+ph)*0.5+0.5);
+      var br = n.lv==='high' ? 5.5 : n.lv==='medium' ? 4 : 3;
+      // Anel pulsante
+      ctx.beginPath(); ctx.arc(n.x, n.y, br+4+p*7, 0, Math.PI*2);
+      ctx.fillStyle = rgba(n.col, 0.04+p*0.07); ctx.fill();
+      ctx.beginPath(); ctx.arc(n.x, n.y, br+1.5, 0, Math.PI*2);
+      ctx.fillStyle = rgba(n.col, 0.14); ctx.fill();
+      // Núcleo com glow
+      ctx.shadowColor = rgba(n.col, 0.9); ctx.shadowBlur = 10;
+      ctx.beginPath(); ctx.arc(n.x, n.y, br, 0, Math.PI*2);
+      ctx.fillStyle = rgba(n.col, 1); ctx.fill();
+      ctx.shadowBlur = 0;
+      // Label países de alto risco
+      if (n.lv==='high' && W > 520) {
+        ctx.fillStyle  = rgba(n.col, 0.9);
+        ctx.font       = 'bold ' + fs + 'px sans-serif';
+        ctx.textAlign  = 'center';
+        ctx.fillText(n.n, n.x, n.y - br - 5);
       }
     });
-    // Brasil
-    var gBr={r:34,g:214,b:122};
-    var pb=(Math.sin(now/600)*0.5+0.5);
-    ctx.beginPath(); ctx.arc(brasilPt.x,brasilPt.y,14+pb*10,0,Math.PI*2);
-    ctx.fillStyle=rc(gBr,0.05+pb*0.06); ctx.fill();
-    ctx.beginPath(); ctx.arc(brasilPt.x,brasilPt.y,8,0,Math.PI*2);
-    ctx.fillStyle=rc(gBr,0.2); ctx.fill();
-    ctx.shadowColor='rgba(34,214,122,0.9)'; ctx.shadowBlur=14;
-    ctx.beginPath(); ctx.arc(brasilPt.x,brasilPt.y,5,0,Math.PI*2);
-    ctx.fillStyle='#22d67a'; ctx.fill();
-    ctx.shadowBlur=0;
-    ctx.fillStyle='#22d67a';
-    ctx.font='bold '+Math.max(10,W*0.012)+'px sans-serif';
-    ctx.textAlign='center';
-    ctx.fillText('BRASIL',brasilPt.x,brasilPt.y-14);
+
+    // Brasil (alvo)
+    var gBr = { r:34, g:214, b:122 };
+    var pb = (Math.sin(now/600)*0.5+0.5);
+    ctx.beginPath(); ctx.arc(brasilPt.x, brasilPt.y, 15+pb*10, 0, Math.PI*2);
+    ctx.fillStyle = rgba(gBr, 0.05+pb*0.06); ctx.fill();
+    ctx.beginPath(); ctx.arc(brasilPt.x, brasilPt.y, 8, 0, Math.PI*2);
+    ctx.fillStyle = rgba(gBr, 0.2); ctx.fill();
+    ctx.shadowColor = 'rgba(34,214,122,0.9)'; ctx.shadowBlur = 14;
+    ctx.beginPath(); ctx.arc(brasilPt.x, brasilPt.y, 5.5, 0, Math.PI*2);
+    ctx.fillStyle = '#22d67a'; ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle  = '#22d67a';
+    ctx.font       = 'bold ' + Math.max(10, W*0.013) + 'px sans-serif';
+    ctx.textAlign  = 'center';
+    ctx.fillText('BRASIL', brasilPt.x, brasilPt.y - 16);
   }
 
+  // ── Loop principal ────────────────────────────────────────────
   function loop(now) {
-    ctx.clearRect(0,0,W,H);
-    drawBg();
+    ctx.clearRect(0, 0, W, H);
+    drawBase();
     drawArcs();
-    drawPackets(now);
+    drawPkts(now);
     drawNodes(now);
     requestAnimationFrame(loop);
   }
 
+  // ── Init ──────────────────────────────────────────────────────
   setup();
   nodes.forEach(sched);
   requestAnimationFrame(loop);
 
-  // Tooltip
+  // ── Tooltip ───────────────────────────────────────────────────
   canvas.addEventListener('mousemove', function(e) {
-    var rect=canvas.getBoundingClientRect();
-    var mx=(e.clientX-rect.left)*(W/rect.width);
-    var my=(e.clientY-rect.top)*(H/rect.height);
-    var found=null;
-    for (var i=0;i<nodes.length;i++) {
-      if (Math.hypot(mx-nodes[i].x,my-nodes[i].y)<16) { found=nodes[i]; break; }
+    var rect = canvas.getBoundingClientRect();
+    var mx   = (e.clientX - rect.left) * (W / rect.width);
+    var my   = (e.clientY - rect.top)  * (H / rect.height);
+    var found = null;
+    for (var i = 0; i < nodes.length; i++) {
+      if (Math.sqrt(Math.pow(mx-nodes[i].x,2)+Math.pow(my-nodes[i].y,2)) < 18) {
+        found = nodes[i]; break;
+      }
     }
     if (found) {
-      tip.textContent=found.name+' \u2014 '+found.count.toLocaleString('pt-BR')+' alertas';
-      tip.style.display='block';
-      var cr=cont.getBoundingClientRect();
-      tip.style.left=(e.clientX-cr.left+14)+'px';
-      tip.style.top=(e.clientY-cr.top-10)+'px';
-    } else { tip.style.display='none'; }
+      tip.textContent = found.n + ' \u2014 ' + found.c.toLocaleString('pt-BR') + ' alertas';
+      tip.style.display = 'block';
+      var cr = cont.getBoundingClientRect();
+      tip.style.left = (e.clientX - cr.left + 14) + 'px';
+      tip.style.top  = (e.clientY - cr.top  - 10) + 'px';
+    } else {
+      tip.style.display = 'none';
+    }
   });
-  canvas.addEventListener('mouseleave',function(){tip.style.display='none';});
+  canvas.addEventListener('mouseleave', function() { tip.style.display = 'none'; });
 
   var rt;
-  window.addEventListener('resize',function(){
+  window.addEventListener('resize', function() {
     clearTimeout(rt);
-    rt=setTimeout(function(){ setup(); packets.length=0; nodes.forEach(sched); },250);
+    rt = setTimeout(function() {
+      setup(); pktList.length = 0; nodes.forEach(sched);
+    }, 250);
   });
 })();
 
-
-// ── Animação contadores ──
-function animCount(el,target,dur=1800){
-  let start=null;
-  const step=ts=>{
-    if(!start)start=ts;
-    const p=Math.min((ts-start)/dur,1);
-    const ease=1-Math.pow(1-p,4);
-    el.textContent=Math.round(ease*target).toLocaleString('pt-BR');
-    if(p<1)requestAnimationFrame(step);
-  };
+/* ══════════════════════════════════════════════
+   4. CONTADORES ANIMADOS
+══════════════════════════════════════════════ */
+function animCount(el, target, dur) {
+  dur = dur || 1800;
+  var start = null;
+  function step(ts) {
+    if (!start) start = ts;
+    var p = Math.min((ts - start) / dur, 1);
+    var ease = 1 - Math.pow(1 - p, 4);
+    el.textContent = Math.round(ease * target).toLocaleString('pt-BR');
+    if (p < 1) requestAnimationFrame(step);
+  }
   requestAnimationFrame(step);
 }
-const obs2=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{
-    if(e.isIntersecting){
-      const n=e.target.querySelector('.n');
-      if(n&&!n.dataset.counted){
-        n.dataset.counted='1';
-        const raw=n.textContent.replace(/[^\d,]/g,'').replace(',','.');
-        const v=parseFloat(raw);
-        if(!isNaN(v)&&v>0)animCount(n,v);
+var obs2 = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      var n = e.target.querySelector('.n');
+      if (n && !n.dataset.counted) {
+        n.dataset.counted = '1';
+        var raw = n.textContent.replace(/[^\d,\.]/g,'').replace(',','.');
+        var v = parseFloat(raw);
+        if (!isNaN(v) && v > 0) animCount(n, v);
       }
     }
   });
-},{threshold:.5});
-document.querySelectorAll('.stat').forEach(el=>obs2.observe(el));
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat').forEach(function(el) { obs2.observe(el); });
 </script>
+
 </body>
 </html>
