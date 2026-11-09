@@ -40,14 +40,14 @@ body{background:var(--bg);color:var(--cz);font-family:'Segoe UI',system-ui,sans-
 nav{
   position:fixed;top:0;inset-x:0;z-index:200;
   display:flex;align-items:center;justify-content:space-between;
-  padding:.65rem 2.5rem;
+  padding:.6rem 1.5rem;
   background:rgba(7,16,28,.88);backdrop-filter:blur(14px);
   border-bottom:1px solid var(--line);
 }
-.nav-brand{font-weight:800;font-size:1.1rem;color:var(--azul);letter-spacing:.04em}
+.nav-brand{font-weight:800;font-size:1rem;color:var(--azul);letter-spacing:.02em;white-space:nowrap}
 .nav-brand span{color:var(--branco)}
-nav ul{list-style:none;display:flex;gap:1.6rem}
-nav a{color:var(--cz);font-size:.85rem;text-decoration:none;transition:color .2s}
+nav ul{list-style:none;display:flex;gap:1rem;flex-wrap:wrap}
+nav a{color:var(--cz);font-size:.80rem;text-decoration:none;transition:color .2s}
 nav a:hover{color:var(--azul)}
 .nav-gh{
   background:var(--azul2);color:#fff!important;
@@ -324,9 +324,9 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
 <nav>
   <div class="nav-brand">🛡️ <span>Aparecido-IA</span></div>
   <ul>
+    <li><a href="#contexto">Contexto</a></li>
     <li><a href="#problema">Problema</a></li>
     <li><a href="#solucao">Solução</a></li>
-    <li><a href="#dados">Dados</a></li>
     <li><a href="#resultados">Resultados</a></li>
     <li><a href="#evolucao">Evolução</a></li>
     <li><a href="https://github.com/Aparecido-Junior-Dev/firewall-ia" target="_blank" class="nav-gh">GitHub ↗</a></li>
@@ -348,24 +348,67 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
   </div>
   <div class="hero-stats">
     <div class="stat stat-b">
-      <span class="n">48.915</span>
+      <span class="n" data-val="48915" data-fmt="num">48.915</span>
       <div class="l">alertas Suricata</div>
     </div>
     <div class="stat stat-v">
-      <span class="n">87,3%</span>
+      <span class="n" data-val="87" data-fmt="pct">87,3%</span>
       <div class="l">já tratados pelo PF</div>
     </div>
     <div class="stat stat-a">
-      <span class="n">31 dias</span>
+      <span class="n" data-val="31" data-fmt="dias">31 dias</span>
       <div class="l">filterlog analisado</div>
     </div>
     <div class="stat stat-r">
-      <span class="n">10,6M</span>
+      <span class="n" data-val="10" data-fmt="M">10,6M</span>
       <div class="l">fluxos PF processados</div>
     </div>
     <div class="stat stat-z">
-      <span class="n">8.328</span>
+      <span class="n" data-val="8328" data-fmt="num">8.328</span>
       <div class="l">IPs CrowdSec ativos</div>
+    </div>
+  </div>
+</section>
+
+
+<section id="contexto" class="fade-in">
+  <div class="sec-tag">00 · Contexto</div>
+  <h2>Ambiente e motivação</h2>
+  <p class="sec-desc">
+    Um firewall real em produção, alertas reais, logs reais — e a pergunta:<br>
+    de 48.915 alertas, quantos representam risco real que ainda não foi bloqueado?
+  </p>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--azul),var(--azul2))"></div>
+      <h3>O ambiente</h3>
+      <p>
+        Firewall <strong style="color:var(--branco)">OPNsense 26.7.8</strong> protegendo uma rede real
+        com política de <strong style="color:var(--branco)">blacklist + default deny</strong>.
+        O Suricata 8.0.8 roda em modo IDS (wire/pcap) na interface WAN — ele vê
+        uma cópia do tráfego <em>antes</em> do PF decidir.
+      </p>
+      <ul style="margin-top:.8rem;padding-left:1.2rem;font-size:.9rem;line-height:1.9">
+        <li><code>eve.json</code> — alertas do Suricata (48.915 eventos, 7 dias)</li>
+        <li><code>filterlog</code> — decisões do PF (473.304 linhas, 5 dias)</li>
+        <li><code>crowdsec_blocklists</code> — 8.328 IPs bloqueados em tempo real</li>
+        <li><code>ABUSEIP</code> — alias com 414.244 IPs (score 100, 180 dias)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#16a34a)"></div>
+      <h3>A motivação</h3>
+      <p>
+        Gerenciar regras de firewall manualmente é lento e propenso a erros.
+        O objetivo é construir um pipeline que:
+      </p>
+      <ol style="margin-top:.8rem;padding-left:1.4rem;font-size:.9rem;line-height:2">
+        <li>Correlaciona alertas do Suricata com as decisões do PF</li>
+        <li>Identifica o que realmente <em>passou</em> pelo firewall</li>
+        <li>Propõe regras de bloqueio via API REST do OPNsense</li>
+        <li>Avalia as regras com split temporal antes de aplicar</li>
+        <li>Mantém a IA como auxiliar — nunca com acesso direto ao firewall</li>
+      </ol>
     </div>
   </div>
 </section>
@@ -1211,30 +1254,41 @@ document.querySelectorAll('.fade-in').forEach(function(el) { obsF.observe(el); }
 /* ══════════════════════════════════════════════════════
    CONTADORES ANIMADOS
 ══════════════════════════════════════════════════════ */
-function animCount(el,target,dur){
-  dur=dur||1800; var start=null;
-  function step(ts){
-    if(!start)start=ts;
-    var p=Math.min((ts-start)/dur,1);
-    var e=1-Math.pow(1-p,4);
-    el.textContent=Math.round(e*target).toLocaleString('pt-BR');
-    if(p<1)requestAnimationFrame(step);
+function animCount(el, target, fmt) {
+  var start = null;
+  var dur = 1800;
+  // Formato final a exibir
+  var finals = {
+    'num':  function(v){ return Math.round(v).toLocaleString('pt-BR'); },
+    'pct':  function(v){ return '87,3%'; },   // valor fixo — não converter
+    'dias': function(v){ return '31 dias'; }, // valor fixo
+    'M':    function(v){ return '10,6M'; },   // valor fixo
+  };
+  var fmtFn = finals[fmt] || function(v){ return Math.round(v).toLocaleString('pt-BR'); };
+  function step(ts) {
+    if (!start) start = ts;
+    var p = Math.min((ts - start) / dur, 1);
+    var e = 1 - Math.pow(1 - p, 4);
+    el.textContent = fmtFn(e * target);
+    if (p < 1) requestAnimationFrame(step);
+    else el.textContent = fmtFn(target); // garante valor final exato
   }
   requestAnimationFrame(step);
 }
-var obsC = new IntersectionObserver(function(entries){
-  entries.forEach(function(e){
-    if(e.isIntersecting){
-      var n=e.target.querySelector('.n');
-      if(n&&!n.dataset.counted){
-        n.dataset.counted='1';
-        var v=parseFloat(n.textContent.replace(/[^\d,\.]/g,'').replace(',','.'));
-        if(!isNaN(v)&&v>0)animCount(n,v);
+var obsC = new IntersectionObserver(function(entries) {
+  entries.forEach(function(e) {
+    if (e.isIntersecting) {
+      var n = e.target.querySelector('.n');
+      if (n && !n.dataset.counted) {
+        n.dataset.counted = '1';
+        var val = parseInt(n.dataset.val || '0', 10);
+        var fmt = n.dataset.fmt || 'num';
+        if (val > 0) animCount(n, val, fmt);
       }
     }
   });
-},{threshold:0.5});
-document.querySelectorAll('.stat').forEach(function(el){obsC.observe(el);});
+}, { threshold: 0.5 });
+document.querySelectorAll('.stat').forEach(function(el) { obsC.observe(el); });
 </script>
 
 
