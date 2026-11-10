@@ -1,0 +1,154 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="800" viewBox="0 0 1100 800">
+<defs>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+    <polygon points="0 0, 8 3, 0 6" fill="#4f91ff"/>
+  </marker>
+</defs>
+<rect width="1100" height="800" fill="#0d1b2a"/>
+<text x="550" y="36" text-anchor="middle" font-size="17" fill="#4f91ff" font-weight="bold" font-family="Segoe UI,sans-serif">C4 Nível 2 — Contêineres do Faro e do OPNsense</text>
+<text x="550" y="55" text-anchor="middle" font-size="11" fill="#8ba3c0" font-family="Segoe UI,sans-serif">O pacote chega uma vez pela igb0: Suricata recebe cópia, PF processa o original. Community ID une os dois.</text>
+<line x1="20" y1="66" x2="1080" y2="66" stroke="#1e3050" stroke-width="1"/>
+<rect x="20" y="80" width="380" height="400" rx="10" fill="none" stroke="#8ba3c0" stroke-width="1.5" stroke-dasharray="8,5"/>
+<text x="210" y="100" text-anchor="middle" font-size="13" fill="#8ba3c0" font-family="Segoe UI,sans-serif">OPNsense [firewall]</text>
+<rect x="40" y="110" width="130" height="70" rx="8" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="105" y="126" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Interface]</text>
+<text x="105" y="145" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">igb0 WAN</text>
+<text x="105" y="164" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">o pacote chega 1 vez</text>
+<rect x="40" y="220" width="130" height="80" rx="8" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="105" y="236" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Processo]</text>
+<text x="105" y="260" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Suricata IDS</text>
+<text x="105" y="279" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">recebe cópia,</text>
+<text x="105" y="291" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">detecta e não</text>
+<text x="105" y="303" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">bloqueia</text>
+<rect x="200" y="220" width="130" height="70" rx="8" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="265" y="236" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Arquivo JSON]</text>
+<text x="265" y="255" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">eve.json</text>
+<text x="265" y="274" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">48.915 alertas</text>
+<rect x="40" y="340" width="130" height="85" rx="8" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="105" y="356" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Processo]</text>
+<text x="105" y="382" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">PF Packet Filter</text>
+<text x="105" y="401" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">pass</text>
+<text x="105" y="413" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">66.958/dia
+block</text>
+<text x="105" y="425" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">30.153/dia</text>
+<rect x="200" y="340" width="130" height="80" rx="8" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="265" y="356" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[syslog]</text>
+<text x="265" y="380" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">filterlog</text>
+<text x="265" y="399" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">syslog, 5</text>
+<text x="265" y="411" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">arquivos
+473.304</text>
+<text x="265" y="423" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">linhas</text>
+<rect x="360" y="220" width="130" height="70" rx="8" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="425" y="236" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[[HTTPS]]</text>
+<text x="425" y="255" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">API REST</text>
+<text x="425" y="274" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">addRule e apply</text>
+<rect x="430" y="80" width="490" height="400" rx="10" fill="none" stroke="#22d67a" stroke-width="1.5" stroke-dasharray="8,5"/>
+<text x="675" y="100" text-anchor="middle" font-size="13" fill="#22d67a" font-family="Segoe UI,sans-serif">Faro [sistema em foco, Python]</text>
+<rect x="450" y="110" width="160" height="90" rx="8" fill="#132240" stroke="#22d67a" stroke-width="2"/>
+<text x="530" y="126" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Script Python]</text>
+<text x="530" y="155" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">correlacionar_v2.py</text>
+<text x="530" y="174" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">une EVE e filterlog</text>
+<text x="530" y="186" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">pelo Community</text>
+<text x="530" y="198" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">ID
+bloq:165</text>
+<text x="530" y="210" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">passou:6.012</text>
+<text x="530" y="222" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">s.r:42.639</text>
+<rect x="450" y="240" width="160" height="70" rx="8" fill="#132240" stroke="#22d67a" stroke-width="2"/>
+<text x="530" y="256" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Arquivo CSV]</text>
+<text x="530" y="267" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">CSV de</text>
+<text x="530" y="284" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">correlação</text>
+<text x="530" y="303" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">IP, alertas, ação do</text>
+<text x="530" y="315" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">PF</text>
+<rect x="450" y="350" width="160" height="85" rx="8" fill="#132240" stroke="#22d67a" stroke-width="2"/>
+<text x="530" y="366" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Aplicação web]</text>
+<text x="530" y="384" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">dashboard.py</text>
+<text x="530" y="401" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">:8080</text>
+<text x="530" y="420" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">funil ao vivo,</text>
+<text x="530" y="432" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">atualiza a cada 15s</text>
+<rect x="640" y="110" width="150" height="90" rx="8" fill="#1e3a2a" stroke="#f5c518" stroke-width="2"/>
+<text x="715" y="126" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[A especificar]</text>
+<text x="715" y="147" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Filtro em</text>
+<text x="715" y="164" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">camadas</text>
+<text x="715" y="183" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">AbuseIPDB, Spamhaus</text>
+<text x="715" y="195" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">DROP e</text>
+<text x="715" y="207" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">assinaturas
+6.700</text>
+<text x="715" y="219" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">IPs → 56</text>
+<rect x="640" y="240" width="150" height="90" rx="8" fill="#1e3a2a" stroke="#f5c518" stroke-width="2"/>
+<text x="715" y="256" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[A especificar]</text>
+<text x="715" y="277" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Seletor de</text>
+<text x="715" y="294" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">candidatos IA</text>
+<text x="715" y="313" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">escolhe IPs a</text>
+<text x="715" y="325" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">bloquear e justifica</text>
+<rect x="640" y="370" width="150" height="80" rx="8" fill="#132240" stroke="#22d67a" stroke-width="2"/>
+<text x="715" y="386" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Script Python]</text>
+<text x="715" y="410" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">propor_regra.py</text>
+<text x="715" y="429" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">monta a regra,</text>
+<text x="715" y="441" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">dry-run por padrão,</text>
+<text x="715" y="453" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">UUID rastreável</text>
+<rect x="20" y="520" width="120" height="70" rx="8" fill="#0f1f30" stroke="#4a5568" stroke-width="2"/>
+<text x="80" y="536" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Externo]</text>
+<text x="80" y="555" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Internet</text>
+<text x="80" y="574" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">varreduras, exploits</text>
+<rect x="160" y="520" width="130" height="70" rx="8" fill="#0f1f30" stroke="#4a5568" stroke-width="2"/>
+<text x="225" y="536" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Fonte externa]</text>
+<text x="225" y="555" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Assinaturas</text>
+<text x="225" y="574" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">ataques conhecidos</text>
+<rect x="310" y="520" width="130" height="70" rx="8" fill="#0f1f30" stroke="#4a5568" stroke-width="2"/>
+<text x="375" y="536" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[API externa]</text>
+<text x="375" y="555" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">AbuseIPDB</text>
+<rect x="460" y="520" width="130" height="70" rx="8" fill="#0f1f30" stroke="#4a5568" stroke-width="2"/>
+<text x="525" y="536" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Lista externa]</text>
+<text x="525" y="555" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Spamhaus DROP</text>
+<rect x="610" y="520" width="130" height="70" rx="8" fill="#0f1f30" stroke="#4a5568" stroke-width="2"/>
+<text x="675" y="536" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Externo]</text>
+<text x="675" y="555" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Modelo de IA</text>
+<text x="675" y="574" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">LLM online ou local</text>
+<rect x="760" y="520" width="130" height="70" rx="8" fill="#1a3a5a" stroke="#4f91ff" stroke-width="2"/>
+<text x="825" y="536" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[Pessoa]</text>
+<text x="825" y="555" text-anchor="middle" font-size="13" font-weight="bold" fill="#e8f0fe" font-family="Segoe UI,sans-serif">Analista de TI</text>
+<text x="825" y="574" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">sem CLI, só</text>
+<text x="825" y="586" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">navegador</text>
+<line x1="105" y1="180" x2="105" y2="220" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="105" y="193" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">cópia</text>
+<line x1="105" y1="300" x2="105" y2="340" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="105" y="313" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">original</text>
+<line x1="170" y1="260" x2="200" y2="258" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="185" y="252" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">gera</text>
+<line x1="170" y1="380" x2="200" y2="376" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="185" y="371" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">registra</text>
+<line x1="330" y1="258" x2="450" y2="258" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="390" y="251" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">lê</text>
+<line x1="330" y1="376" x2="450" y2="376" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="390" y="369" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">lê</text>
+<line x1="610" y1="155" x2="640" y2="155" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="610" y1="280" x2="640" y2="285" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="715" y1="200" x2="715" y2="240" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="715" y1="330" x2="715" y2="370" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="790" y1="410" x2="870" y2="300" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="830" y="348" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">56 IPs candidatos</text>
+<line x1="870" y1="240" x2="820" y2="170" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="845" y="198" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">POST addRule + apply</text>
+<text x="845" y="210" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[API]</text>
+<line x1="360" y1="258" x2="420" y2="258" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="390" y="251" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">aplica</text>
+<line x1="80" y1="520" x2="80" y2="480" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="80" y="493" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">tráfego</text>
+<line x1="225" y1="520" x2="310" y2="480" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="267" y="493" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">atualizam</text>
+<line x1="375" y1="520" x2="640" y2="310" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="507" y="408" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">lista</text>
+<line x1="525" y1="520" x2="700" y2="320" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="612" y="413" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">prompt</text>
+<line x1="825" y1="520" x2="610" y2="430" stroke="#4f91ff" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="717" y="468" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">acompanha e valida</text>
+<text x="717" y="480" text-anchor="middle" font-size="10" fill="#8ba3c0" font-family="Segoe UI,sans-serif">[HTTP]</text>
+<rect x="20" y="720" width="13" height="13" rx="3" fill="#132240" stroke="#22d67a" stroke-width="2"/>
+<text x="40" y="731" text-anchor="start" font-size="11" fill="#8ba3c0" font-family="Segoe UI,sans-serif">Contêiner do Faro</text>
+<rect x="190" y="720" width="13" height="13" rx="3" fill="#1e3a2a" stroke="#f5c518" stroke-width="2"/>
+<text x="210" y="731" text-anchor="start" font-size="11" fill="#8ba3c0" font-family="Segoe UI,sans-serif">A especificar</text>
+<rect x="330" y="720" width="13" height="13" rx="3" fill="#162640" stroke="#8ba3c0" stroke-width="2"/>
+<text x="350" y="731" text-anchor="start" font-size="11" fill="#8ba3c0" font-family="Segoe UI,sans-serif">OPNsense (existente)</text>
+<rect x="510" y="720" width="13" height="13" rx="3" fill="#0f1f30" stroke="#4a5568" stroke-width="2"/>
+<text x="530" y="731" text-anchor="start" font-size="11" fill="#8ba3c0" font-family="Segoe UI,sans-serif">Externo</text>
+</svg>

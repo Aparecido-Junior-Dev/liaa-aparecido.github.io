@@ -327,6 +327,7 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
     <li><a href="#contexto">Contexto</a></li>
     <li><a href="#problema">Problema</a></li>
     <li><a href="#solucao">Solução</a></li>
+    <li><a href="#arquitetura">C4</a></li>
     <li><a href="#resultados">Resultados</a></li>
     <li><a href="#evolucao">Evolução</a></li>
     <li><a href="#caminhos">Caminhos</a></li>
@@ -539,6 +540,59 @@ code{background:var(--card2);color:var(--azul);padding:.1rem .45rem;border-radiu
       <h3>20 alertas — exploit real</h3>
       <p>8 alertas do Realtek CVE-2021-35394 (exploit ativo). 5 IPs bloqueados via API REST do OPNsense. 12 são STUN/Jabber (legítimo).</p>
       <p style="margin-top:.8rem;color:var(--verde)"><strong>→ 5 regras IA-aparecido ativas no PF</strong></p>
+    </div>
+  </div>
+</section>
+
+
+<hr class="divider">
+
+<!-- ══ ARQUITETURA C4 ══ -->
+<section id="arquitetura" class="fade-in">
+  <div class="sec-tag">02b · Arquitetura C4</div>
+  <h2>Desenho arquitetural — modelo C4</h2>
+  <p class="sec-desc">
+    Proposto pelo prof. Diego Kreutz na avaliação pública de 20/10/2026 — 
+    <a href="https://unipampa4all.github.io/disciplinas/liaa/20262/projetos_html/aparecido-firewall.html" target="_blank">ver fonte</a>
+  </p>
+
+  <!-- Nível 1 -->
+  <div class="card" style="margin-bottom:1.5rem">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--azul),var(--azul2))"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap">
+      <h3 style="margin:0">Nível 1 — Contexto</h3>
+      <span style="background:rgba(79,145,255,.12);color:var(--azul);padding:.2rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700">C4 Level 1</span>
+    </div>
+    <p style="font-size:.9rem;margin-bottom:1rem">
+      O Faro fica ao lado do firewall: lê o que o OPNsense registra e devolve regras pela API, 
+      consultando fontes de reputação e um modelo de IA.
+    </p>
+    <div style="background:#030b17;border-radius:10px;padding:.5rem;overflow-x:auto">
+      <img src="assets/c4_nivel1.svg" alt="C4 Nível 1 — Contexto do sistema Faro" 
+           style="width:100%;max-width:900px;display:block;margin:0 auto"/>
+    </div>
+  </div>
+
+  <!-- Nível 2 -->
+  <div class="card">
+    <div class="card-accent" style="background:linear-gradient(90deg,var(--verde),#16a34a)"></div>
+    <div style="display:flex;align-items:center;gap:.8rem;margin-bottom:1rem;flex-wrap:wrap">
+      <h3 style="margin:0">Nível 2 — Contêineres</h3>
+      <span style="background:rgba(34,214,122,.12);color:var(--verde);padding:.2rem .8rem;border-radius:20px;font-size:.78rem;font-weight:700">C4 Level 2</span>
+    </div>
+    <p style="font-size:.9rem;margin-bottom:1rem">
+      O pacote chega uma vez pela igb0: o Suricata recebe uma cópia e o PF processa o original. 
+      A correlação pelo Community ID gera o CSV que alimenta o filtro, a IA, a proposta de regra e o dashboard.
+    </p>
+    <div style="background:#030b17;border-radius:10px;padding:.5rem;overflow-x:auto">
+      <img src="assets/c4_nivel2.svg" alt="C4 Nível 2 — Contêineres do Faro e do OPNsense"
+           style="width:100%;max-width:1100px;display:block;margin:0 auto"/>
+    </div>
+    <div style="margin-top:1rem;padding:.8rem;background:var(--card2);border-radius:8px;font-size:.85rem">
+      <strong style="color:var(--amar)">Caixas tracejadas (amarelas):</strong>
+      <span style="color:var(--cinza)"> "Filtro em camadas" e "Seletor de candidatos IA" — são as especificações que o professor pediu. 
+      Estão documentadas em 
+      <code>docs/especificacao_ia.md</code> no repositório.</span>
     </div>
   </div>
 </section>
